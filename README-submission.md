@@ -6,7 +6,7 @@ Last Name       | First Name      | GitHub User Name
 --------------- | --------------- | --------------------
 TBD             | TBD             | TBD
 TBD             | TBD             | TBD
-TBD             | TBD             | TBD
+Velasquez       | Brandon         | BrandonFVelasquez
 
 # Test Results
 How many of the dumpfiles matched (using the check-dumpfiles.sh script)?
