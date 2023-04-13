@@ -6,10 +6,9 @@ public interface BTreeInterface<E> {
      * Searches for a key in the B-tree.
      * @param x the node to start the search from
      * @param k the key to search for
-     * @return a 2-tuple (y,i) consisting of a node y and an index i such that y.keyi = k,
-     *         where we are searching for key k. If not found, the search returns null.
+     * @return the node that contains the key, or null if the key is not found
      */
-    public Tuple<BTreeNode<E>, Integer> search(BTreeNode<E> x, E k);
+    public BTreeNode<E> search(BTreeNode<E> x, E k);
 
     /**
      * Creates an empty B-tree.
