@@ -1,6 +1,6 @@
 package cs321.btree;
 
-public interface BTree<E> {
+public interface BTreeInterface<E> {
 
     /**
      * Searches for a key in the B-tree.
