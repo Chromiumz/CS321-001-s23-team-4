@@ -14,6 +14,27 @@ public class TreeObject<E>
 	protected E object;
 	private int frequency;
 	
+	private BTreeNode<E> left;
+	private BTreeNode<E> right;
+	
+	/**
+	 * Gets the left node of this TreeObject
+	 * 
+	 * @return The left BTreeNode
+	 */
+	public BTreeNode<E> getLeft() {
+		return left;
+	}
+	
+	/**
+	 * Gets the right node of this TreeObject
+	 * 
+	 * @return The right BTreeNode
+	 */
+	public BTreeNode<E> getRight() {
+		return right;
+	}
+	
 	/**
 	 * Constructor for a TreeObject
 	 * 
