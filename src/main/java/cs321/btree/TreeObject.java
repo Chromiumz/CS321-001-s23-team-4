@@ -36,6 +36,20 @@ public class TreeObject<E>
 	}
 	
 	/**
+	 * Sets the left node of this TreeObject
+	 */
+	public void setLeft(BTreeNode<E> node) {
+		this.left = node;
+	}
+	
+	/**
+	 * Sets the right node of this TreeObject
+	 */
+	public void setRight(BTreeNode<E> node) {
+		this.right = node;
+	}
+	
+	/**
 	 * Constructor for a TreeObject
 	 * 
 	 * @param object The object to store inside this TreeObject
@@ -86,4 +100,5 @@ public class TreeObject<E>
 	    TreeObject<?> that = (TreeObject<?>) o;
 	    return Objects.equals(object, that.object);
 	}
+	
 }
