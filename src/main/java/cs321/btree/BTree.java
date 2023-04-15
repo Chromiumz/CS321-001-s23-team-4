@@ -1,32 +1,73 @@
 package cs321.btree;
 
-public class BTree<E>
+import java.util.Vector;
+
+public class BTree<E> implements BTreeInterface
 {
 
-	public class BTreeNode<E>
+	private BTreeNode<E> root;
+	private int t = 0;
+	
+	public BTree(int t) {
+		this.t = t;
+		this.root = new BTreeNode<E>(t);
+	}
+	
+	static class Tuple<K, V> {
+	    public final K node;
+	    public final V index;
+
+	    public Tuple(K node, V index) {
+	        this.node = node;
+	        this.index = index;
+	    }
+	}
+	
+	static class BTreeNode<E>
 	{
-		private TreeObject<E> self;
-		private BTreeNode<E> left;
-		private BTreeNode<E> right;
+		private TreeObject<E>[] keys;
+		private BTreeNode<E>[] child;
+		private int n;
+		private boolean leaf;
 		
-		public BTreeNode(TreeObject<E> treeObject) {
-			this.self = treeObject;
+		@SuppressWarnings("unchecked")
+		public BTreeNode(int t, boolean leaf) {
+			this.keys = (TreeObject<E>[]) new Object[(2*t)-1];
+			this.child = (BTreeNode<E>[]) new Object[(2*t)];
 		}
 		
-		public BTreeNode(E object) {
-			this(new TreeObject<E>(object));
+		public BTreeNode(int t) {
+			this(t, true);
 		}
+	}
+
+	@Override
+	public BTreeNode search(Object object) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void insert(Object object) {
+		// TODO Auto-generated method stub
 		
-		public BTreeNode<E> getRight() {
-			return right;
-		}
+	}
+
+	@Override
+	public BTreeNode splitRoot() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void splitChild(int i) {
+		// TODO Auto-generated method stub
 		
-		public BTreeNode<E> getLeft() {
-			return left;
-		}
+	}
+
+	@Override
+	public void insertNonfull(BTreeNode x, Object object) {
+		// TODO Auto-generated method stub
 		
-		public TreeObject<E> getSelf() {
-			return self;
-		}
 	}
 }
