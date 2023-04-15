@@ -94,6 +94,8 @@ public class BTree implements BTreeInterface {
 
         file.read(buffer);
         buffer.flip();
+        
+        int n = buffer.getInt();
 
         TreeObject[] keys = new TreeObject[2 * t - 1];
 
@@ -127,6 +129,7 @@ public class BTree implements BTreeInterface {
 
         x.key = keys;
         x.child = child;
+        x.n = n;
 
         return x;
     }
@@ -139,6 +142,8 @@ public class BTree implements BTreeInterface {
     public void diskWrite(BTreeNode x) throws IOException {
         file.position(x.address);
         buffer.clear();
+        
+        buffer.putInt(x.n);
 
         for (int i = 0; i < x.key.length; i++) {
             if (x.key[i] == null) {
@@ -169,10 +174,12 @@ public class BTree implements BTreeInterface {
         private TreeObject[] key;
         private long[] child;
         private boolean leaf;
+        private int n;
 
         public BTreeNode(int t, boolean leaf, boolean onDisk) {
             this.key = new TreeObject[(2 * t) - 1];
             this.child = new long[(2 * t)];
+            this.n = 0;
 
             if (onDisk) {
                 address = nextDiskAddress;
@@ -192,42 +199,71 @@ public class BTree implements BTreeInterface {
             return
             TreeObject.getDiskSize() * key.length +
                 Long.BYTES * child.length +
+                Integer.BYTES +
                 1;
+        }
+    }
+    
+    class Tuple {
+    	private BTreeNode node;
+    	private int index;
+    	
+    	public Tuple(BTreeNode node, int index) {
+    		this.node = node;
+    		this.index = index;
+    	}
+    	
+    	public BTreeNode getNode() {
+    		return node;
+    	}
+    	
+    	public int getIndex() {
+    		return this.index;
+    	}
+    }
+
+    @Override
+    public Tuple search(BTreeNode x, long k) throws IOException {
+        int i = 0;
+        while(i < x.n && k > x.key[i].value) {
+        	i = i + 1;
+        }
+        if(i < x.n && k == x.key[i].value) {
+        	return new Tuple(x, i);
+        } else if (x.leaf) {
+        	return null;
+        } else {
+        	return search(diskRead(x.child[i]),i);
         }
     }
 
     @Override
-    public BTreeNode search(BTreeNode x, long k) {
+    public void create() throws IOException {
+        root = new BTreeNode(t, true, true);
+        
+		diskWrite(root);
+    }
+
+    @Override
+    public void insert(long k) throws IOException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public BTreeNode splitRoot() throws IOException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public BTree create() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void insert(long k) {
+    public void splitChild(BTreeNode x, int i) throws IOException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public BTreeNode splitRoot() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void splitChild(BTreeNode x, int i) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void insertNonfull(BTreeNode x, long k) {
+    public void insertNonfull(BTreeNode x, long k) throws IOException {
         // TODO Auto-generated method stub
 
     }
