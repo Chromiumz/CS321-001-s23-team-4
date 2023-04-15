@@ -169,6 +169,12 @@ public class BTree implements BTreeInterface {
     }
 
 
+    /**
+     * Internal Class of BTree to represent a BTreeNode
+     * 
+     * @author Ernest
+     *
+     */
     class BTreeNode {
         private long address;
         private TreeObject[] key;
@@ -176,6 +182,13 @@ public class BTree implements BTreeInterface {
         private boolean leaf;
         private int n;
 
+        /**
+         * Constructor of a BTreeNode
+         * 
+         * @param t The degree of the BTree
+         * @param leaf If the BTreeNode is a leaf
+         * @param onDisk Should the node have an address that is non-null (Writable)
+         */
         public BTreeNode(int t, boolean leaf, boolean onDisk) {
             this.key = new TreeObject[(2 * t) - 1];
             this.child = new long[(2 * t)];
@@ -187,20 +200,179 @@ public class BTree implements BTreeInterface {
             }
         }
 
+        /**
+         * Constructor of a BTreeNode
+         * 
+         * @param t The degree of the BTree
+         * @param leaf If the BTreeNode is a leaf
+         */
         public BTreeNode(int t, boolean leaf) {
             this(t, leaf, false);
         }
 
+        /**
+         * Constructor of a BTreeNode
+         * 
+         * @param t The degree of the BTree
+         */
         public BTreeNode(int t) {
             this(t, true);
         }
 
+        /**
+         * Gets the disk size of a BTreeNode so it can be stored in the BTree data file
+         * This value will be different depending on the degree of the BTree!
+         * 
+         * @return The size in bytes.
+         */
         public int getDiskSize() {
             return
             TreeObject.getDiskSize() * key.length +
                 Long.BYTES * child.length +
                 Integer.BYTES +
                 1;
+        }
+        
+        /**
+         * Get the address of the BTreeNode
+         * 
+         * @return The address to its position in the data file
+         */
+        public long getAddress() {
+        	return address;
+        }
+        
+        /**
+         * Get all the keys held inside this node.
+         * 
+         * @return The keys.
+         */
+        public TreeObject[] getKeys() {
+        	return key;
+        }
+        
+        /**
+         * Get a specific key at a certain index
+         * 
+         * @param x The index
+         * @return The key at the given index
+         */
+        public TreeObject getKey(int x) {
+        	if(x >= n)
+        		return null;
+        	return key[x];
+        }
+        
+        /**
+         * Get all the children of this BTreeNode
+         * 
+         * @return The children
+         */
+        public long[] getChildrenAddresses() {
+        	return child;
+        }
+        
+        /**
+         * Get a specific child node at a given index
+         * 
+         * @param x The index
+         * @return The child at the given index
+         */
+        public long getChildAddress(int x) {
+        	if(x >= n)
+        		return 0;
+        	return child[x];
+        }
+        
+        /**
+         * Check if the BTreeNode is a leaf
+         * 
+         * @return Whether or not the BTreeNode is a leaf.
+         */
+        public boolean isLeaf() {
+        	return leaf;
+        }
+        
+        ///////////////////////////////////////////////
+        //              HELPER METHODS               //
+        // TRY TO AVOID USING THESE OUTSIDE OF TESTS //
+        //  THEY CREATE MORE BTREENODES AT RUNTIME   //
+        ///////////////////////////////////////////////
+        
+        /**
+         * Returns a BTreeNode from a target index in the children.
+         * 
+         * @param x The target index
+         * @return The target BTreeNode.
+         * 
+         * @throws IOException
+         */
+        public BTreeNode getChildBTreeNode(int x) throws IOException {
+        	if(x >= n)
+        		return null;
+        	return diskRead(child[x]);
+        }
+        
+        /**
+         * Returns a BTreeNode array for the current BTreeNode.
+         * 
+         * !!! WARNING ALL BTREENODES ARE READ !!!
+         * 
+         * @return The array of children BTreeNodes
+         * 
+         * @throws IOException
+         */
+        public BTreeNode[] getAllChildBTreeNode() throws IOException {
+        	int x = 0;
+        	BTreeNode[] resolve = new BTreeNode[child.length];
+        	while(x < n) {
+        		resolve[x] = diskRead(child[x]);
+        	}
+        	return resolve;
+        }
+        
+        /**
+         * Creates a compact JSON representation of important data. Useful for quickly checking the information of a node.
+         * 
+         * @return The compiled String
+         */
+        public String toJSONData() {
+        	String keyJSON = "";
+        	for(int i = 0; i < key.length; i++) {
+        		if(i >= n) {
+        			continue;
+        		}
+        		keyJSON += String.format("\t\t{\n\t\t\tvalue: %d\n\t\t\tfrequency: %d\n\t\t},\n", key[i].getValue(), key[i].getFrequency());
+        	}
+        	
+        	String childJSON = "";
+        	for(int i = 0; i < child.length; i++) {
+        		if(i >= n) {
+        			continue;
+        		}
+        		childJSON += String.format("\t\t{\n\t\t\taddress: %d\n\t\t},\n", child[i]);
+        	}
+        	
+        	String resolve = String.format("{\n"
+        			+ "\taddress: %d,\n"
+        			+ "\tdiskSize: %d,\n"
+        			+ "\tdegree: %d,\n"
+        			+ "\tn: %d,\n"
+        			+ "\tkeys: [\n"
+        			+ "%s"
+        			+ "\t],\n"
+        			+ "\tchildren: [\n"
+        			+ "%s"
+        			+ "\t]\n"
+        			+ "}",
+        			address,
+        			getDiskSize(),
+        			t,
+        			n,
+        			keyJSON,
+        			childJSON);
+        	
+        	return resolve;
         }
     }
     
