@@ -3,7 +3,15 @@ package cs321.btree;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.io.IOException;
+/**
+ * Class for BTree unit tests
+ * @author ariap
+ *
+ */
 public class BTreeTest
 {
     // HINT:
@@ -36,4 +44,58 @@ public class BTreeTest
 //        }
     }
     
+    @Test
+    public void BTreeConstructor() {
+    	File newFile = new File("ConstructorTest");
+    	if(newFile.exists()) {
+    		newFile.delete();
+    	}
+    	try {
+    	BTree newTree = new BTree(newFile, 4);
+    	if(newTree.getRoot() != null) {
+			 fail("BTree is not null after constructed.");
+			}
+    	assertEquals(4, newTree.getDegree());
+    	}
+    	catch (Exception e) {
+    		fail(e.getMessage());
+    	}
+    }
+   
+    @Test
+    public void BTreeCreate() {
+    	File newFile = new File("ConstructorTest");
+    	if(newFile.exists()) {
+    		newFile.delete();
+    	}
+    	
+    	BTree newTree = null;
+    	
+    	try {
+    	newTree =	new BTree(newFile, 4);
+    	}
+    	catch (Exception e) {
+    		fail(e.getMessage());
+    	}
+    	
+    	try {
+			newTree.create();
+			if(newTree.getRoot() == null) {
+			 fail("The root is null after create is called.");
+			}
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+    }
+    	
+    @Test
+    public void BTreeInsert() {
+    //TO-DO
+    }
+    
+    @Test
+    public void BTreeMetadata() {
+    //TO-DO	
+    }
+    	
 }
