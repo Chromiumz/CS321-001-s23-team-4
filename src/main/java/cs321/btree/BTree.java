@@ -267,5 +267,21 @@ public class BTree implements BTreeInterface {
         // TODO Auto-generated method stub
 
     }
+    
+    public BTreeNode getRoot() {
+    	return root;
+    }
+    
+    public int getDegree() {
+    	return t;
+    }
+    
+    public int getNodeSize() {
+    	return nodeSize;
+    }
+    
+    public int getMetaDataSize() {
+    	return METADATA_SIZE;
+    }
 
 }
