@@ -42,13 +42,19 @@ public class BTree<E> implements BTreeInterface
 	}
 
 	@Override
-	public BTreeNode search(Object object) {
+	public BTreeNode search(BTreeNode x, Object k) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void insert(Object object) {
+	public BTree create() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void insert(Object k) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -60,13 +66,13 @@ public class BTree<E> implements BTreeInterface
 	}
 
 	@Override
-	public void splitChild(int i) {
+	public void splitChild(BTreeNode x, int i) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void insertNonfull(BTreeNode x, Object object) {
+	public void insertNonfull(BTreeNode x, Object k) {
 		// TODO Auto-generated method stub
 		
 	}
