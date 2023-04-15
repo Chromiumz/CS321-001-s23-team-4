@@ -38,6 +38,15 @@ public class TreeObject
 		return frequency;
 	}
 	
+	/**
+	 * Sets the frequency of this TreeObject
+	 * 
+	 * @param val The new frequency
+	 */
+	public void setFrequency(long val) {
+		this.frequency = val;
+	}
+	
 	
 	/**
 	 * Gets the value within this TreeObject
