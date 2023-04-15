@@ -3,24 +3,22 @@ package cs321.btree;
 import java.util.Objects;
 
 /**
- * Represents a TreeObject capable of storing information about duplicates and a generic object.
+ * Represents a TreeObject capable of storing information about duplicates and a long value.
  * 
  * @author Ernest
- *
- * @param <E>
  */
-public class TreeObject<E>
+public class TreeObject
 {
-	protected E object;
-	private int frequency;
+	protected long value;
+	private long frequency;
 
 	/**
 	 * Constructor for a TreeObject
 	 * 
 	 * @param object The object to store inside this TreeObject
 	 */
-	public TreeObject(E object) {
-		this.object = object;
+	public TreeObject(long value) {
+		this.value = value;
 		this.frequency = 1;
 	}
 	
@@ -36,34 +34,21 @@ public class TreeObject<E>
 	 * 
 	 * @return The frequency of this tree object (Amount of duplicates)
 	 */
-	public int getFrequency() {
+	public long getFrequency() {
 		return frequency;
 	}
 	
 	
 	/**
-	 * Gets the object within this TreeObject
+	 * Gets the value within this TreeObject
 	 * 
-	 * @return The object
+	 * @return The value
 	 */
-	public E getObject() {
-		return object;
+	public long getValue() {
+		return value;
 	}
 	
-	/**
-	 * Checks if this TreeObject is equal to another Object.
-	 * 
-	 * @param o The object to test for equality
-	 * 
-	 * @return True if the internal objects of both TreeObjects are equal, false otherwise.
-	 */
-	public boolean equals(Object o) {
-	    if (o == null || getClass() != o.getClass()) {
-	        return false;
-	    }
-	    
-	    TreeObject<?> that = (TreeObject<?>) o;
-	    return Objects.equals(object, that.object);
+	public static int getDiskSize() {
+		return Long.BYTES*2;
 	}
-	
 }

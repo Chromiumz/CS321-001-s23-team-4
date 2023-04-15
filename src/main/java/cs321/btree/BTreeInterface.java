@@ -2,7 +2,7 @@ package cs321.btree;
 
 import cs321.btree.BTree.BTreeNode;
 
-public interface BTreeInterface<E> {
+public interface BTreeInterface {
 
     /**
      * Searches for a key in the B-tree.
@@ -10,37 +10,37 @@ public interface BTreeInterface<E> {
      * @param k the key to search for
      * @return the node that contains the key, or null if the key is not found
      */
-    public BTreeNode<E> search(BTreeNode<E> x, E k);
+    public BTreeNode search(BTreeNode x, long k);
 
     /**
      * Creates an empty B-tree.
      * @return the newly created B-tree
      */
-    public BTree<E> create();
+    public BTree create();
 
     /**
      * Inserts a key into the B-tree.
      * @param k the key to insert
      */
-    public void insert(E k);
+    public void insert(long k);
 
     /**
      * Splits the root of the B-tree.
      * @return the new root of the B-tree
      */
-    public BTreeNode<E> splitRoot();
+    public BTreeNode splitRoot();
 
     /**
      * Splits a child of a B-tree node.
      * @param x the parent node of the child to split
      * @param i the index of the child to split
      */
-    public void splitChild(BTreeNode<E> x, int i);
+    public void splitChild(BTreeNode x, int i);
 
     /**
      * Inserts a key into a non-full B-tree node.
      * @param x the node to insert the key into
      * @param k the key to insert
      */
-    public void insertNonfull(BTreeNode<E> x, E k);
+    public void insertNonfull(BTreeNode x, long k);
 }
