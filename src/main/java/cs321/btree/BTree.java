@@ -188,7 +188,7 @@ public class BTree implements BTreeInterface {
      * @author Ernest
      *
      */
-    class BTreeNode {
+    public class BTreeNode {
         private long address;
         private TreeObject[] key;
         private long[] child;
