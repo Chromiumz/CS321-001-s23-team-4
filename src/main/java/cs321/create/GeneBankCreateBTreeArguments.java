@@ -2,12 +2,12 @@ package cs321.create;
 
 public class GeneBankCreateBTreeArguments
 {
-    private final boolean useCache;
-    private final int degree;
-    private final String gbkFileName;
-    private final int subsequenceLength;
-    private final int cacheSize;
-    private final int debugLevel;
+    private boolean useCache;
+    private int degree;
+    private String gbkFileName;
+    private int subsequenceLength;
+    private int cacheSize;
+    private int debugLevel;
 
     public GeneBankCreateBTreeArguments(boolean useCache, int degree, String gbkFileName, int subsequenceLength, int cacheSize, int debugLevel)
     {
@@ -16,6 +16,56 @@ public class GeneBankCreateBTreeArguments
         this.gbkFileName = gbkFileName;
         this.subsequenceLength = subsequenceLength;
         this.cacheSize = cacheSize;
+        this.debugLevel = debugLevel;
+    }
+
+        // Getter Methods
+    public boolean isUseCache() {
+        return useCache;
+    }
+
+    public int getDegree() {
+        return degree;
+    }
+
+    public String getGbkFileName() {
+        return gbkFileName;
+    }
+
+    public int getSubsequenceLength() {
+        return subsequenceLength;
+    }
+
+    public int getCacheSize() {
+        return cacheSize;
+    }
+
+    public int getDebugLevel() {
+        return debugLevel;
+    }
+
+    // Setter Methods
+    public void setUseCache(boolean useCache) {
+        this.useCache = useCache;
+    }
+
+    public void setDegree(int degree) {
+        this.degree = degree;
+    }
+
+    public void setGbkFileName(String gbkFileName) {
+        this.gbkFileName = gbkFileName;
+    }
+
+    public void setSubsequenceLength(int subsequenceLength) {
+        this.subsequenceLength = subsequenceLength;
+    }
+
+    public void setCacheSize(int cacheSize) {
+        this.cacheSize = cacheSize;
+    }
+
+    public void setDebugLevel(int debugLevel) {
         this.debugLevel = debugLevel;
     }
 
