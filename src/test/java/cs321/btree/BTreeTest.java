@@ -2,11 +2,16 @@ package cs321.btree;
 
 import org.junit.Test;
 
+import cs321.btree.BTree.BTreeNode;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 /**
  * Class for BTree unit tests
  * @author ariap
@@ -43,6 +48,7 @@ public class BTreeTest
 //            assertEquals(expectedNodesContent[indexNode], bTree.getArrayOfNodeContentsForNodeIndex(indexNode).toString());
 //        }
     }
+    Random rand = new Random();
     
     @Test
     public void BTreeConstructor() {
@@ -72,7 +78,7 @@ public class BTreeTest
     	BTree newTree = null;
     	
     	try {
-    	newTree =	new BTree(newFile, 4);
+    	newTree = new BTree(newFile, 4);
     	}
     	catch (Exception e) {
     		fail(e.getMessage());
@@ -89,8 +95,179 @@ public class BTreeTest
     }
     	
     @Test
+    public void BTreeSearch() {
+    	File newFile = new File("ConstructorTest");
+    	if(newFile.exists()) {
+    		newFile.delete();
+    	}
+    	
+    	BTree newTree = null;
+    	
+    	//element not present
+    	try {
+        	newTree = new BTree(newFile, 4);
+        	newTree.create();
+        	assertNull(newTree.search(newTree.getRoot(), -10));
+        	assertNull(newTree.search(newTree.getRoot(), 10));
+        	}
+        	catch (Exception e) {
+        		fail(e.getMessage());
+        	}
+    	
+    	//element present
+    	try {
+    		 long gen = new Random().nextLong();
+        	newTree = new BTree(newFile, 4);
+        	newTree.create();
+        	newTree.insert(gen);
+        	assertNotNull(newTree.search(newTree.getRoot(), gen));
+        	}
+        	catch (Exception e) {
+        		fail(e.getMessage());
+        	}
+    }
+    
+    @Test
     public void BTreeInsert() {
-    //TO-DO
+    	File newFile = new File("ConstructorTest");
+    	if(newFile.exists()) {
+    		newFile.delete();
+    	}
+    	
+    	BTree newTree = null;
+    	BTreeNode x = null;
+    	
+    	try {
+        	newTree = new BTree(newFile, 4);
+        	newTree.create();
+        	newTree.insert(rand.nextLong());
+        	x = newTree.getRoot();
+        	
+        	assertNotNull(newTree.search(x, rand.nextLong()));
+        	
+        	TreeObject[] nodeSize = x.getKeys();
+        	if (nodeSize.length > newTree.getDegree()*2-1) {
+        		fail("Too many keys in the node");
+    		}
+        	
+        	long[] childCount = x.getChildrenAddresses();
+        	if (!x.isLeaf() && childCount.length != (nodeSize.length+1)) {
+        		fail("The amount of children nodes is incorrect");
+    		}
+    		}
+        	catch (Exception e) {
+        		fail(e.getMessage());
+        	}
+    }
+    
+    @Test
+    public void BTreeInsertNonFull() {
+       	File newFile = new File("ConstructorTest");
+    	if(newFile.exists()) {
+    		newFile.delete();
+    	}
+    	
+    	BTree newTree = null;
+    	BTreeNode x = null;
+    	
+    	try {
+        	newTree = new BTree(newFile, 4);
+        	newTree.create();
+        	newTree.insertNonfull(x, rand.nextLong());
+        	x = newTree.getRoot();
+        	
+        	assertNotNull(newTree.search(x, rand.nextLong()));
+        	
+        	TreeObject[] nodeSize = x.getKeys();
+        	if (nodeSize.length > newTree.getDegree()*2-1) {
+        		fail("Too many keys in the node");
+    		}
+        	
+        	long[] childCount = x.getChildrenAddresses();
+        	if (!x.isLeaf() && childCount.length != (nodeSize.length+1)) {
+        		fail("The amount of children nodes is incorrect");
+    		}
+    		}
+        	catch (Exception e) {
+        		fail(e.getMessage());
+        	}
+    }
+    
+    @Test
+    public void BTreeSplitRoot() {
+    	File newFile = new File("ConstructorTest");
+    	if(newFile.exists()) {
+    		newFile.delete();
+    	}
+    	
+    	BTree newTree = null;
+    	
+    	try {
+        	newTree = new BTree(newFile, 4);
+        	newTree.create();
+        	
+        	for (int i = 0; i < 6; i ++) {
+        		newTree.insert(rand.nextLong());
+        	}
+        	
+        	int size = newTree.getNodeSize();
+        	
+        	assertNotNull(newTree.splitRoot());
+        	
+        	//make sure the resulting children have the right number of keys
+        	BTreeNode[] newArr = newTree.getRoot().getAllChildBTreeNode();
+        	for (int i = 0; i < newArr.length; i ++) {
+        		assertNotNull(newArr[i]);
+        		if ((newArr[i].getKeys().length != (size-1)/2 || newArr[i].getKeys().length != (size-1)-(size-1)/2) && newArr[i].getKeys().length < size) {
+        			fail("Amount of keys in the new child nodes is incorrect");
+        		}
+        	}
+    
+    	}
+    	catch (Exception e) {
+    		fail(e.getMessage());
+    	}
+    }
+    
+    @Test
+    public void BTreeSplitChild() {
+    	
+    	File newFile = new File("ConstructorTest");
+    	if(newFile.exists()) {
+    		newFile.delete();
+    	}
+    	
+    	BTree newTree = null;
+    	
+    	try {
+        	newTree = new BTree(newFile, 4);
+        	newTree.create();
+        	
+        	for (int i = 0; i < 6; i ++) {
+        		newTree.insert(rand.nextLong());
+        	}
+        	
+        	int size = newTree.getNodeSize();
+        	
+        	BTreeNode child = newTree.getRoot().getChildBTreeNode(1);
+        	
+        	newTree.splitChild(newTree.getRoot(), 1);
+        	assertNotNull(child);
+        	
+        	//make sure the resulting children have the right number of keys
+        	BTreeNode[] newArr = child.getAllChildBTreeNode();
+        	for (int i = 0; i < newArr.length; i ++) {
+        		assertNotNull(newArr[i]);
+        		if ((newArr[i].getKeys().length != (size-1)/2 || newArr[i].getKeys().length != (size-1)-(size-1)/2) && newArr[i].getKeys().length < size) {
+        			fail("Amount of keys in the new child nodes is incorrect");
+        		}
+        	}
+    
+    	}
+    	catch (Exception e) {
+    		fail(e.getMessage());
+    	}
+    	
     }
     
     @Test
