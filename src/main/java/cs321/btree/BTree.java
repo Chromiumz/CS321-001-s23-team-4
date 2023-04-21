@@ -17,10 +17,22 @@ public class BTree implements BTreeInterface {
     private long rootAddress = METADATA_SIZE; // offset to the root node
 
     private BTreeNode root;
-    private int t = -1;
+    private int t;
 
-    public BTree(File BTreeFile, int t) {
-        this.t = t;
+    public BTree(File BTreeFile, int pageSize) {    	
+    	//dynamic space
+    	int x1 = TreeObject.getDiskSize() * 2;
+    	int x2 = Long.BYTES * 2;
+    	
+    	//constant space
+    	int x3 = Integer.BYTES + 1 + TreeObject.getDiskSize() * -1;
+    	
+    	pageSize -= x3;
+    	
+    	pageSize /= x1 + x2;
+    	
+    	this.t = pageSize;
+        
         this.root = new BTreeNode(t, false, false);
 
         nodeSize = root.getDiskSize();
@@ -104,7 +116,7 @@ public class BTree implements BTreeInterface {
             long frequency = buffer.getLong();
 
             TreeObject key = null;
-            if (value != 0 && frequency != 0) {
+            if (value != -1 && frequency != -1) {
                 key = new TreeObject(value);
                 key.setFrequency(frequency);
             }
@@ -130,6 +142,7 @@ public class BTree implements BTreeInterface {
         x.key = keys;
         x.child = child;
         x.n = n;
+        x.address = diskAddress;
 
         return x;
     }
@@ -147,8 +160,8 @@ public class BTree implements BTreeInterface {
 
         for (int i = 0; i < x.key.length; i++) {
             if (x.key[i] == null) {
-                buffer.putLong(0);
-                buffer.putLong(0);
+                buffer.putLong(-1);
+                buffer.putLong(-1);
             } else {
                 buffer.putLong(x.key[i].getValue());
                 buffer.putLong(x.key[i].getFrequency());
@@ -192,6 +205,7 @@ public class BTree implements BTreeInterface {
         public BTreeNode(int t, boolean leaf, boolean onDisk) {
             this.key = new TreeObject[(2 * t) - 1];
             this.child = new long[(2 * t)];
+            this.leaf = leaf;
             this.n = 0;
 
             if (onDisk) {
@@ -227,7 +241,7 @@ public class BTree implements BTreeInterface {
          */
         public int getDiskSize() {
             return
-            TreeObject.getDiskSize() * key.length +
+            	TreeObject.getDiskSize() * key.length +
                 Long.BYTES * child.length +
                 Integer.BYTES +
                 1;
@@ -308,8 +322,6 @@ public class BTree implements BTreeInterface {
          * @throws IOException
          */
         public BTreeNode getChildBTreeNode(int x) throws IOException {
-        	if(x >= n)
-        		return null;
         	return diskRead(child[x]);
         }
         
@@ -342,12 +354,16 @@ public class BTree implements BTreeInterface {
         		if(i >= n) {
         			continue;
         		}
+        		if(key[i] == null) {
+        			keyJSON += String.format("\t\t{\n\t\t\tvalue: null\n\t\t\tfrequency: null\n\t\t},\n");
+        			continue;
+        		}
         		keyJSON += String.format("\t\t{\n\t\t\tvalue: %d\n\t\t\tfrequency: %d\n\t\t},\n", key[i].getValue(), key[i].getFrequency());
         	}
         	
         	String childJSON = "";
         	for(int i = 0; i < child.length; i++) {
-        		if(i >= n) {
+        		if(child[i] == 0) { 
         			continue;
         		}
         		childJSON += String.format("\t\t{\n\t\t\taddress: %d\n\t\t},\n", child[i]);
@@ -357,6 +373,7 @@ public class BTree implements BTreeInterface {
         			+ "\taddress: %d,\n"
         			+ "\tdiskSize: %d,\n"
         			+ "\tdegree: %d,\n"
+        			+ "\tisLeaf: %b,\n"
         			+ "\tn: %d,\n"
         			+ "\tkeys: [\n"
         			+ "%s"
@@ -368,6 +385,7 @@ public class BTree implements BTreeInterface {
         			address,
         			getDiskSize(),
         			t,
+        			leaf,
         			n,
         			keyJSON,
         			childJSON);
@@ -415,29 +433,123 @@ public class BTree implements BTreeInterface {
         
 		diskWrite(root);
     }
-
+    
+    
+    //If you want to see a basic BTree uncomment this main method.
+    
+    /*
+    
+    public static void main(String[] args) throws IOException {
+    	BTree tree = new BTree(new File("test8"), 200);
+    	tree.create();
+    	for(int i = 1; i < 10; i++) {
+    		tree.insert(i);
+    	}
+    	System.out.println(tree.root.toJSONData());
+    	System.out.println(tree.root.getChildBTreeNode(0).toJSONData());
+    	System.out.println(tree.root.getChildBTreeNode(1).toJSONData());
+    }
+    
+    */
+    
     @Override
-    public void insert(long k) throws IOException {
-        // TODO Auto-generated method stub
-
+    public void insert(long k) throws IOException {    	
+    	if(root.n == 2 * t - 1) {
+    		BTreeNode s = splitRoot();
+    		insertNonfull(s, k);
+    	} else {
+    		insertNonfull(root, k);
+    	}
+    	
     }
 
     @Override
     public BTreeNode splitRoot() throws IOException {
-        // TODO Auto-generated method stub
-        return null;
+    	BTreeNode s = new BTreeNode(t, false, true);
+    	s.child[0] = root.address;
+    	root = s;
+    	splitChild(s, 0);
+    	return s;
     }
 
     @Override
     public void splitChild(BTreeNode x, int i) throws IOException {
-        // TODO Auto-generated method stub
-
+    	BTreeNode y = diskRead(x.child[i]);
+    	BTreeNode z = new BTreeNode(t, y.leaf, true);
+    	
+    	z.n = t-2;
+    	
+    	for(int j = 0; j < t-2; j++) {
+    		z.key[j] = y.key[j+t];
+    	}
+    	
+    	if(!y.leaf) {
+    		for(int j = 0; j < t-1; j++) {
+    			z.child[j] = y.child[j+t];
+    		}
+    	}
+    	
+    	y.n = t-1;
+    	
+    	for(int j = x.n -1; j > i+1; j--) {
+    		x.child[j+1] = x.child[j];
+    	}
+    	
+    	x.child[i + 1] = z.address;
+    	
+    	for(int j = x.n - 1; j > i; j--) {
+    		x.key[j+1] = x.key[j];
+    	}
+    	
+    	x.key[i] = y.key[t-1];
+    	x.n = x.n + 1;
+    	
+    	diskWrite(y);
+    	diskWrite(z);
+    	diskWrite(x);
+    	
     }
 
     @Override
     public void insertNonfull(BTreeNode x, long k) throws IOException {
-        // TODO Auto-generated method stub
-
+    	int i = x.n - 1;
+    	
+    	if(x.leaf) {
+    		if(i == -1) {
+    			x.key[0] = new TreeObject(k);
+        		x.n++;
+        		diskWrite(x);
+        		return;
+    		}
+    		while(x.key[i] == null) {
+    			i--;
+    		}
+    		while(i >= 0 && k < x.key[i].value) {
+    			x.key[i+1] = x.key[i];
+    			i--;
+    		}
+    		x.key[i + 1] = new TreeObject(k);
+    		x.n++;
+    		diskWrite(x);
+    	} else {
+    		while(x.key[i] == null) {
+    			i--;
+    		}
+    		while(i >= 0 && k < x.key[i].value) {
+    			i--;
+    		}
+    		i++;
+    		BTreeNode readChild = diskRead(x.child[i]);
+    		if(readChild.n == 2 * t - 1) {
+    			 splitChild(x, i);
+    			  if(k > x.key[i].value) {
+    			  	  i++;
+    			      readChild = diskRead(x.child[i]);
+    			 }
+    			 
+    		}
+    		insertNonfull(readChild, k);
+    	}
     }
     
     public BTreeNode getRoot() {
