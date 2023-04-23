@@ -1,13 +1,14 @@
 package cs321.btree;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
 
-public class BTree implements BTreeInterface {
+public class BTree {
     private int METADATA_SIZE = Long.BYTES + Integer.BYTES;
     private long nextDiskAddress = METADATA_SIZE;
     private FileChannel file;
@@ -133,7 +134,7 @@ public class BTree implements BTreeInterface {
 
         long[] child = new long[2 * t];
 
-        for (int i = 0; i < (2 * t) - 1; i++) {
+        for (int i = 0; i < child.length; i++) {
             child[i] = buffer.getLong();
         }
 
@@ -411,146 +412,165 @@ public class BTree implements BTreeInterface {
     		return this.index;
     	}
     }
-
-    @Override
-    public Tuple search(BTreeNode x, long k) throws IOException {
-        int i = 0;
-        while(i < x.n && k > x.key[i].value) {
-        	i = i + 1;
-        }
-        if(i < x.n && k == x.key[i].value) {
-        	return new Tuple(x, i);
-        } else if (x.leaf) {
-        	return null;
-        } else {
-        	return search(diskRead(x.child[i]),i);
-        }
-    }
-
-    @Override
+    
     public void create() throws IOException {
         root = new BTreeNode(t, true, true);
         
 		diskWrite(root);
     }
     
-    
-    //If you want to see a basic BTree uncomment this main method.
-    
-    /*
-    
     public static void main(String[] args) throws IOException {
-    	BTree tree = new BTree(new File("test8"), 200);
+    	BTree tree = new BTree(new File("test15"), 200);
     	tree.create();
-    	for(int i = 1; i < 10; i++) {
+    	for(int i = 1; i < 100; i++) {
     		tree.insert(i);
     	}
-    	System.out.println(tree.root.toJSONData());
-    	System.out.println(tree.root.getChildBTreeNode(0).toJSONData());
-    	System.out.println(tree.root.getChildBTreeNode(1).toJSONData());
+    	
+    	tree.inOrderTraversal(tree.root);
     }
     
-    */
+    public void inOrderTraversal(BTreeNode node) throws IOException {
+        if (node == null) {
+            return;
+        }
+        int i;
+        for (i = 0; i < node.n; i++) {
+            if (!node.leaf) {
+                inOrderTraversal(diskRead(node.child[i]));
+            }
+            System.out.print(node.key[i].getValue() + " ");
+        }
+        if (!node.leaf) {
+            inOrderTraversal(diskRead(node.child[i]));
+        }
+    }
     
-    @Override
-    public void insert(long k) throws IOException {    	
-    	if(root.n == 2 * t - 1) {
-    		BTreeNode s = splitRoot();
-    		insertNonfull(s, k);
-    	} else {
-    		insertNonfull(root, k);
-    	}
-    	
+    public void printBTree(BTreeNode node) throws IOException {
+        if (node != null) {
+            // Convert the node to a JSON string
+            String jsonData = node.toJSONData();
+            
+            // Print the JSON string
+            System.out.println(jsonData);
+            
+            // Recursively print the child nodes
+            if (!node.leaf) {
+                for (int i = 0; i < node.n + 1; i++) {
+                    BTreeNode child = diskRead(node.child[i]);
+                    printBTree(child);
+                }
+            }
+        }
+    }
+    
+    /*
+     * This code has slight modifications from the cited website in order to match out Binary File implementation.
+     *  
+     * Citation: https://www.programiz.com/dsa/b-tree#:~:text=B%2Dtree%20is%20a%20special,%2Dbalanced%20m%2Dway%20tree.
+     * 
+     * Splits a BTreeNode.
+     * 
+     * @param x The new parent.
+     * @param pos The position of the split.
+     * @param y The node to split on.
+     * 
+     * @throws If something goes wrong during a disk write/read operation
+     */
+    private void split(BTreeNode x, int pos, BTreeNode y) throws IOException {
+      BTreeNode z = new BTreeNode(t, false, true);
+      z.leaf = y.leaf;
+      z.n = t - 1;
+      for (int j = 0; j < t - 1; j++) {
+        z.key[j] = y.key[j + t];
+      }
+      if (!y.leaf) {
+        for (int j = 0; j < t; j++) {
+          z.child[j] = y.child[j + t];
+        }
+      }
+      y.n = t - 1;
+      for (int j = x.n; j >= pos + 1; j--) {
+        x.child[j + 1] = x.child[j];
+      }
+      x.child[pos + 1] = z.address;
+
+      for (int j = x.n - 1; j >= pos; j--) {
+        x.key[j + 1] = x.key[j];
+      }
+      x.key[pos] = y.key[t - 1];
+      x.n = x.n + 1;
+      
+      diskWrite(z);
+      diskWrite(y);
+      diskWrite(x);
     }
 
-    @Override
-    public BTreeNode splitRoot() throws IOException {
-    	BTreeNode s = new BTreeNode(t, false, true);
-    	s.child[0] = root.address;
-    	root = s;
-    	splitChild(s, 0);
-    	return s;
+    /*
+     * This code has slight modifications from the cited website in order to match out Binary File implementation.
+     *  
+     * Citation: https://www.programiz.com/dsa/b-tree#:~:text=B%2Dtree%20is%20a%20special,%2Dbalanced%20m%2Dway%20tree.
+     * 
+     * Inserts a value into the BTree
+     * 
+     * @param key The value to insert.
+     * 
+     * @throws If something goes wrong during a disk write/read operation
+     */
+    public void insert(final long key) throws IOException {
+      BTreeNode r = root;
+      if (r.n == 2 * t - 1) {
+        BTreeNode s = new BTreeNode(t, false, true);
+        root = s;
+        s.leaf = false;
+        s.n = 0;
+        s.child[0] = r.address;
+        split(s, 0, r);
+        insertValue(s, key);
+      } else {
+        insertValue(r, key);
+      }
     }
 
-    @Override
-    public void splitChild(BTreeNode x, int i) throws IOException {
-    	BTreeNode y = diskRead(x.child[i]);
-    	BTreeNode z = new BTreeNode(t, y.leaf, true);
-    	
-    	z.n = t-2;
-    	
-    	for(int j = 0; j < t-2; j++) {
-    		z.key[j] = y.key[j+t];
-    	}
-    	
-    	if(!y.leaf) {
-    		for(int j = 0; j < t-1; j++) {
-    			z.child[j] = y.child[j+t];
-    		}
-    	}
-    	
-    	y.n = t-1;
-    	
-    	for(int j = x.n -1; j > i+1; j--) {
-    		x.child[j+1] = x.child[j];
-    	}
-    	
-    	x.child[i + 1] = z.address;
-    	
-    	for(int j = x.n - 1; j > i; j--) {
-    		x.key[j+1] = x.key[j];
-    	}
-    	
-    	x.key[i] = y.key[t-1];
-    	x.n = x.n + 1;
-    	
-    	diskWrite(y);
-    	diskWrite(z);
-    	diskWrite(x);
-    	
-    }
+    /*
+     * This code has slight modifications from the cited website in order to match out Binary File implementation.
+     *  
+     * Citation: https://www.programiz.com/dsa/b-tree#:~:text=B%2Dtree%20is%20a%20special,%2Dbalanced%20m%2Dway%20tree.
+     * 
+     * Inserts a value at a specific BTreeNode
+     * 
+     * @param x The BTreeNode that will attempt to inherit the key
+     * @param k The value to insert.
+     * 
+     * @throws If something goes wrong during a disk write/read operation
+     */
+    final private void insertValue(BTreeNode x, long k) throws IOException {
 
-    @Override
-    public void insertNonfull(BTreeNode x, long k) throws IOException {
-    	int i = x.n - 1;
-    	
-    	if(x.leaf) {
-    		if(i == -1) {
-    			x.key[0] = new TreeObject(k);
-        		x.n++;
-        		diskWrite(x);
-        		return;
-    		}
-    		while(x.key[i] == null) {
-    			i--;
-    		}
-    		while(i >= 0 && k < x.key[i].value) {
-    			x.key[i+1] = x.key[i];
-    			i--;
-    		}
-    		x.key[i + 1] = new TreeObject(k);
-    		x.n++;
-    		diskWrite(x);
-    	} else {
-    		while(x.key[i] == null) {
-    			i--;
-    		}
-    		while(i >= 0 && k < x.key[i].value) {
-    			i--;
-    		}
-    		i++;
-    		BTreeNode readChild = diskRead(x.child[i]);
-    		if(readChild.n == 2 * t - 1) {
-    			 splitChild(x, i);
-    			  if(k > x.key[i].value) {
-    			  	  i++;
-    			      readChild = diskRead(x.child[i]);
-    			 }
-    			 
-    		}
-    		insertNonfull(readChild, k);
-    	}
+      if (x.leaf) {
+        int i = 0;
+        for (i = x.n - 1; i >= 0 && k < x.key[i].value; i--) {
+          x.key[i + 1] = x.key[i];
+        }
+        x.key[i + 1] = new TreeObject(k);
+        x.n = x.n + 1;
+        diskWrite(x);
+      } else {
+        int i = 0;
+        for (i = x.n - 1; i >= 0 && k < x.key[i].value; i--) {
+        }
+        ;
+        i++;
+        BTreeNode tmp = diskRead(x.child[i]);
+        if (tmp.n == 2 * t - 1) {
+          split(x, i, tmp);
+          if (k > x.key[i].value) {
+            i++;
+          }
+        }
+        insertValue(diskRead(x.child[i]), k);
+      }
+
     }
+    
     
     public BTreeNode getRoot() {
     	return root;
