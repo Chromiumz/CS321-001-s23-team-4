@@ -189,7 +189,7 @@ public class BTree {
      * @author Ernest
      *
      */
-    class BTreeNode {
+    public class BTreeNode {
         private long address;
         private TreeObject[] key;
         private long[] child;
