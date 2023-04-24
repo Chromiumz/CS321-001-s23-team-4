@@ -419,15 +419,22 @@ public class BTree {
 		diskWrite(root);
     }
     
+    /*
     public static void main(String[] args) throws IOException {
     	BTree tree = new BTree(new File("test15"), 200);
     	tree.create();
     	for(int i = 1; i < 100; i++) {
     		tree.insert(i);
     	}
+    	tree.insert(1);
+    	tree.insert(1);
+    	tree.insert(1);
+    	tree.insert(1);
+    	tree.insert(2);
+    	tree.insert(2);
     	
     	tree.inOrderTraversal(tree.root);
-    }
+    }*/
     
     public void inOrderTraversal(BTreeNode node) throws IOException {
         if (node == null) {
@@ -476,7 +483,7 @@ public class BTree {
      * 
      * @throws If something goes wrong during a disk write/read operation
      */
-    private void split(BTreeNode x, int pos, BTreeNode y) throws IOException {
+    public void split(BTreeNode x, int pos, BTreeNode y) throws IOException {
       BTreeNode z = new BTreeNode(t, false, true);
       z.leaf = y.leaf;
       z.n = t - 1;
@@ -543,12 +550,18 @@ public class BTree {
      * 
      * @throws If something goes wrong during a disk write/read operation
      */
-    final private void insertValue(BTreeNode x, long k) throws IOException {
-
+    final public void insertValue(BTreeNode x, long k) throws IOException {
+      BTreeNode dup = duplicate(x,k);
+      
+      if(dup != null) {
+    	  diskWrite(dup);
+    	  return;
+      }
+      
       if (x.leaf) {
         int i = 0;
         for (i = x.n - 1; i >= 0 && k < x.key[i].value; i--) {
-          x.key[i + 1] = x.key[i];
+            x.key[i + 1] = x.key[i];
         }
         x.key[i + 1] = new TreeObject(k);
         x.n = x.n + 1;
@@ -571,6 +584,72 @@ public class BTree {
 
     }
     
+    /*
+     * This code has slight modifications from the cited website in order to match out Binary File implementation.
+     *  
+     * Citation: https://www.programiz.com/dsa/b-tree#:~:text=B%2Dtree%20is%20a%20special,%2Dbalanced%20m%2Dway%20tree.
+     * 
+     * Locate a specific BTreeNode in the BTree and return it as a tuple
+     * 
+     * @param x The BTreeNode to start the search from.
+     * @param k The value to find.
+     * 
+     * @throws If something goes wrong during a disk write/read operation
+     * 
+     * @return A Tuple containing the BTreeNode and its index.
+     */
+    public Tuple search(BTreeNode x, long key) throws IOException {
+        int i = 0;
+        if (x == null)
+          return null;
+        for (i = 0; i < x.n; i++) {
+          if (key < x.key[i].value) {
+            break;
+          }
+          if (key == x.key[i].value) {
+            return new Tuple(x, i);
+          }
+        }
+        if (x.leaf) {
+          return null;
+        } else {
+          return search(diskRead(x.child[i]), key);
+        }
+      }
+    
+    /*
+     * This code has slight modifications from the cited website in order to match out Binary File implementation.
+     *  
+     * Citation: https://www.programiz.com/dsa/b-tree#:~:text=B%2Dtree%20is%20a%20special,%2Dbalanced%20m%2Dway%20tree.
+     * 
+     * Locate any potential duplicates in a BTree starting from node x increments frequency if it finds something.
+     * 
+     * @param x The BTreeNode to start the search from.
+     * @param k The value to find.
+     * 
+     * @throws If something goes wrong during a disk write/read operation
+     * 
+     * @return The BTreeNode where the duplicate was found, null otherwise.
+     */
+    private BTreeNode duplicate(BTreeNode x, long key) throws IOException {
+    	int i = 0;
+        if (x == null)
+          return null;
+        for (i = 0; i < x.n; i++) {
+          if (key < x.key[i].value) {
+            break;
+          }
+          if (key == x.key[i].value) {
+              x.key[i].incrementFrequency();
+        	  return x;
+          }
+        }
+        if (x.leaf) {
+          return null;
+        } else {
+          return duplicate(diskRead(x.child[i]), key);
+        }
+    }
     
     public BTreeNode getRoot() {
     	return root;

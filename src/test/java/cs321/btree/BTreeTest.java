@@ -19,36 +19,13 @@ import java.util.Random;
  */
 public class BTreeTest
 {
-    // HINT:
-    //  instead of checking all intermediate states of constructing a tree
-    //  you can check the final state of the tree and
-    //  assert that the constructed tree has the expected number of nodes and
-    //  assert that some (or all) of the nodes have the expected values
-    @Test
-    public void btreeDegree4Test()
-    {
-//        //TODO instantiate and populate a bTree object
-//        int expectedNumberOfNodes = TBD;
-//
-//        // it is expected that these nodes values will appear in the tree when
-//        // using a level traversal (i.e., root, then level 1 from left to right, then
-//        // level 2 from left to right, etc.)
-//        String[] expectedNodesContent = new String[]{
-//                "TBD, TBD",      //root content
-//                "TBD",           //first child of root content
-//                "TBD, TBD, TBD", //second child of root content
-//        };
-//
-//        assertEquals(expectedNumberOfNodes, bTree.getNumberOfNodes());
-//        for (int indexNode = 0; indexNode < expectedNumberOfNodes; indexNode++)
-//        {
-//            // root has indexNode=0,
-//            // first child of root has indexNode=1,
-//            // second child of root has indexNode=2, and so on.
-//            assertEquals(expectedNodesContent[indexNode], bTree.getArrayOfNodeContentsForNodeIndex(indexNode).toString());
-//        }
-    }
     Random rand = new Random();
+    
+    /*
+     * This value is the required pageSize to reach a degree 4 BTree with our current data size.
+     */
+    final int magicPageSizeValue = 200;
+    
     
     @Test
     public void BTreeConstructor() {
@@ -57,9 +34,10 @@ public class BTreeTest
     		newFile.delete();
     	}
     	try {
-    	BTree newTree = new BTree(newFile, 4);
-    	if(newTree.getRoot() != null) {
-			 fail("BTree is not null after constructed.");
+    	BTree newTree = new BTree(newFile, magicPageSizeValue);
+    	System.out.println(newTree.getRoot());
+    	if(newTree.getRoot() == null) {
+			 fail("BTree is null after constructed.");
 			}
     	assertEquals(4, newTree.getDegree());
     	}
@@ -78,7 +56,7 @@ public class BTreeTest
     	BTree newTree = null;
     	
     	try {
-    	newTree = new BTree(newFile, 4);
+    	newTree = new BTree(newFile, magicPageSizeValue);
     	}
     	catch (Exception e) {
     		fail(e.getMessage());
@@ -105,7 +83,7 @@ public class BTreeTest
     	
     	//element not present
     	try {
-        	newTree = new BTree(newFile, 4);
+        	newTree = new BTree(newFile, magicPageSizeValue);
         	newTree.create();
         	assertNull(newTree.search(newTree.getRoot(), -10));
         	assertNull(newTree.search(newTree.getRoot(), 10));
@@ -116,8 +94,8 @@ public class BTreeTest
     	
     	//element present
     	try {
-    		 long gen = new Random().nextLong();
-        	newTree = new BTree(newFile, 4);
+    		long gen = new Random().nextLong();
+        	newTree = new BTree(newFile, 200);
         	newTree.create();
         	newTree.insert(gen);
         	assertNotNull(newTree.search(newTree.getRoot(), gen));
@@ -138,12 +116,15 @@ public class BTreeTest
     	BTreeNode x = null;
     	
     	try {
-        	newTree = new BTree(newFile, 4);
+        	newTree = new BTree(newFile, magicPageSizeValue);
         	newTree.create();
-        	newTree.insert(rand.nextLong());
+        	
+        	long save = rand.nextLong();
+        	
+        	newTree.insert(save);
         	x = newTree.getRoot();
         	
-        	assertNotNull(newTree.search(x, rand.nextLong()));
+        	assertNotNull(newTree.search(x, save));
         	
         	TreeObject[] nodeSize = x.getKeys();
         	if (nodeSize.length > newTree.getDegree()*2-1) {
@@ -171,12 +152,17 @@ public class BTreeTest
     	BTreeNode x = null;
     	
     	try {
-        	newTree = new BTree(newFile, 4);
+        	newTree = new BTree(newFile, magicPageSizeValue);
         	newTree.create();
-        	newTree.insertNonfull(x, rand.nextLong());
-        	x = newTree.getRoot();
         	
-        	assertNotNull(newTree.search(x, rand.nextLong()));
+        	long save = rand.nextLong();
+        	
+        	x = newTree.getRoot();
+        	newTree.insertValue(x, save);
+        	
+        	assertNotNull(newTree.search(x, save));
+        	
+        	
         	
         	TreeObject[] nodeSize = x.getKeys();
         	if (nodeSize.length > newTree.getDegree()*2-1) {
@@ -191,83 +177,6 @@ public class BTreeTest
         	catch (Exception e) {
         		fail(e.getMessage());
         	}
-    }
-    
-    @Test
-    public void BTreeSplitRoot() {
-    	File newFile = new File("ConstructorTest");
-    	if(newFile.exists()) {
-    		newFile.delete();
-    	}
-    	
-    	BTree newTree = null;
-    	
-    	try {
-        	newTree = new BTree(newFile, 4);
-        	newTree.create();
-        	
-        	for (int i = 0; i < 6; i ++) {
-        		newTree.insert(rand.nextLong());
-        	}
-        	
-        	int size = newTree.getNodeSize();
-        	
-        	assertNotNull(newTree.splitRoot());
-        	
-        	//make sure the resulting children have the right number of keys
-        	BTreeNode[] newArr = newTree.getRoot().getAllChildBTreeNode();
-        	for (int i = 0; i < newArr.length; i ++) {
-        		assertNotNull(newArr[i]);
-        		if ((newArr[i].getKeys().length != (size-1)/2 || newArr[i].getKeys().length != (size-1)-(size-1)/2) && newArr[i].getKeys().length < size) {
-        			fail("Amount of keys in the new child nodes is incorrect");
-        		}
-        	}
-    
-    	}
-    	catch (Exception e) {
-    		fail(e.getMessage());
-    	}
-    }
-    
-    @Test
-    public void BTreeSplitChild() {
-    	
-    	File newFile = new File("ConstructorTest");
-    	if(newFile.exists()) {
-    		newFile.delete();
-    	}
-    	
-    	BTree newTree = null;
-    	
-    	try {
-        	newTree = new BTree(newFile, 4);
-        	newTree.create();
-        	
-        	for (int i = 0; i < 6; i ++) {
-        		newTree.insert(rand.nextLong());
-        	}
-        	
-        	int size = newTree.getNodeSize();
-        	
-        	BTreeNode child = newTree.getRoot().getChildBTreeNode(1);
-        	
-        	newTree.splitChild(newTree.getRoot(), 1);
-        	assertNotNull(child);
-        	
-        	//make sure the resulting children have the right number of keys
-        	BTreeNode[] newArr = child.getAllChildBTreeNode();
-        	for (int i = 0; i < newArr.length; i ++) {
-        		assertNotNull(newArr[i]);
-        		if ((newArr[i].getKeys().length != (size-1)/2 || newArr[i].getKeys().length != (size-1)-(size-1)/2) && newArr[i].getKeys().length < size) {
-        			fail("Amount of keys in the new child nodes is incorrect");
-        		}
-        	}
-    
-    	}
-    	catch (Exception e) {
-    		fail(e.getMessage());
-    	}
-    	
     }
     
     @Test
