@@ -1,5 +1,4 @@
 package cs321.create;
-
 import cs321.btree.BTree;
 import cs321.common.ParseArgumentException;
 
@@ -12,6 +11,7 @@ public class GeneBankCreateBTree
     public static void main(String[] args) throws Exception
     {
         GeneBankCreateBTreeArguments geneBankCreateBTreeArguments = parseArguments(args);
+
 
     }
 
