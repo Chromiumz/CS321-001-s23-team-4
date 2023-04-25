@@ -8,6 +8,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
 
+import cs321.create.SequenceUtils;
+
 public class BTree {
     private int METADATA_SIZE = Long.BYTES + Integer.BYTES;
     private long nextDiskAddress = METADATA_SIZE;
@@ -436,21 +438,21 @@ public class BTree {
     	tree.inOrderTraversal(tree.root);
     }*/
     
-    public void inOrderTraversal(BTreeNode node) throws IOException {
-        if (node == null) {
-            return;
-        }
-        int i;
-        for (i = 0; i < node.n; i++) {
-            if (!node.leaf) {
-                inOrderTraversal(diskRead(node.child[i]));
-            }
-            System.out.print(node.key[i].getValue() + " ");
-        }
-        if (!node.leaf) {
-            inOrderTraversal(diskRead(node.child[i]));
-        }
-    }
+    public void inOrderTraversal(BTreeNode node, int Seq) throws IOException {
+      if (node == null) {
+          return;
+      }
+      int i;
+      for (i = 0; i < node.n; i++) {
+          if (!node.leaf) {
+              inOrderTraversal(diskRead(node.child[i]), Seq);
+          }
+          System.out.print(SequenceUtils.longToDnaString(node.key[i].getValue(), Seq) + ":" + node.key[i].getFrequency()+ " ");
+      }
+      if (!node.leaf) {
+          inOrderTraversal(diskRead(node.child[i]), Seq);
+      }
+  }
     
     public void printBTree(BTreeNode node) throws IOException {
         if (node != null) {

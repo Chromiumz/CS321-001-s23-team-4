@@ -31,6 +31,7 @@ public class GeneBankCreateBTree
 
         // Initialize BTree
         BTree bTree = new BTree(new File("myBTree"), degree);
+        bTree.create();
         
         StringBuilder sequenceBuilder = new StringBuilder();
         
@@ -62,16 +63,16 @@ public class GeneBankCreateBTree
                             // Generate all subsequences of length k
                             for (int i = 0; i <= subsequence.length() - sequenceLength; i++) {
                                 String dnaSubsequence = subsequence.substring(i, i + sequenceLength);
-                                System.out.println(dnaSubsequence);
+                                //System.out.println(dnaSubsequence);
                                 // Convert DNA subsequence to long key
-                                //long key = SequenceUtils.dnaStringToLong(dnaSubsequence);
+                                long key = SequenceUtils.dnaStringToLong(dnaSubsequence);
                                 // Insert key into BTree
+                                bTree.insert(key);
                                 //System.out.println(key);
                             }
                         }
                     }
-		    System.out.println(Arrays.toString(filteredList.toArray()));
-		    System.out.println("S");
+                    bTree.inOrderTraversal(bTree.getRoot(), sequenceLength);
 		}
 
     }
