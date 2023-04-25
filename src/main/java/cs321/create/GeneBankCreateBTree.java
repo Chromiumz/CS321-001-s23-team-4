@@ -23,8 +23,6 @@ public class GeneBankCreateBTree
         int cacheSize = cmdArgs.getCacheSize();
         int debugLevel = cmdArgs.getDebugLevel();
 
-        BufferedReader reader = new BufferedReader(new FileReader(new File(gbkFileName)));
-
         // Create BTree file, if the file exists delete it to make it easier to re-run test
         File bTreeFile = new File("myBTree");
         if (bTreeFile.exists()) {
@@ -34,18 +32,44 @@ public class GeneBankCreateBTree
         // Initialize BTree
         BTree bTree = new BTree(new File("myBTree"), degree);
         
+        StringBuilder sequenceBuilder = new StringBuilder();
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(gbkFileName))) {
 
-        String inputString = gbkFileName;
+            String currentLine;
+            while ((currentLine = br.readLine()) != null) {
+                sequenceBuilder.append(currentLine).append("\n");
+            }
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String inputString = sequenceBuilder.toString();
 
         Pattern pattern = Pattern.compile("ORIGIN([\\s\\S]*?)\\/\\/");
 		Matcher matcher = pattern.matcher(inputString);
 	
 		while (matcher.find()) {
 		    String sequence = matcher.group(1);
-		    String[] x = sequence.split(" ");
+		    String[] x = sequence.split("\\s+");
 		    List<String> filteredList = Arrays.stream(x)
                     .filter(str -> !str.isEmpty() && !str.matches(".*\\d.*"))
                     .collect(Collectors.toList());
+                    for (String subsequence : filteredList) {
+                        // Check if subsequence contains any 'N's
+                        if (subsequence.indexOf('N') == -1) {
+                            // Generate all subsequences of length k
+                            for (int i = 0; i <= subsequence.length() - sequenceLength; i++) {
+                                String dnaSubsequence = subsequence.substring(i, i + sequenceLength);
+                                System.out.println(dnaSubsequence);
+                                // Convert DNA subsequence to long key
+                                //long key = SequenceUtils.dnaStringToLong(dnaSubsequence);
+                                // Insert key into BTree
+                                //System.out.println(key);
+                            }
+                        }
+                    }
 		    System.out.println(Arrays.toString(filteredList.toArray()));
 		    System.out.println("S");
 		}
