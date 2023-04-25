@@ -3,15 +3,52 @@ import cs321.btree.BTree;
 import cs321.common.ParseArgumentException;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class GeneBankCreateBTree
 {
 
     public static void main(String[] args) throws Exception
     {
-        GeneBankCreateBTreeArguments geneBankCreateBTreeArguments = parseArguments(args);
+        GeneBankCreateBTreeArguments cmdArgs = parseArgumentsAndHandleExceptions(args);
 
+        int degree = cmdArgs.getDegree();
+        int sequenceLength = cmdArgs.getSubsequenceLength();
+        String gbkFileName = cmdArgs.getGbkFileName();
+        boolean useCache = cmdArgs.isUseCache();
+        int cacheSize = cmdArgs.getCacheSize();
+        int debugLevel = cmdArgs.getDebugLevel();
+
+        BufferedReader reader = new BufferedReader(new FileReader(new File(gbkFileName)));
+
+        // Create BTree file, if the file exists delete it to make it easier to re-run test
+        File bTreeFile = new File("myBTree");
+        if (bTreeFile.exists()) {
+            bTreeFile.delete();
+        }
+
+        // Initialize BTree
+        BTree bTree = new BTree(new File("myBTree"), degree);
+        
+
+        String inputString = gbkFileName;
+
+        Pattern pattern = Pattern.compile("ORIGIN([\\s\\S]*?)\\/\\/");
+		Matcher matcher = pattern.matcher(inputString);
+	
+		while (matcher.find()) {
+		    String sequence = matcher.group(1);
+		    String[] x = sequence.split(" ");
+		    List<String> filteredList = Arrays.stream(x)
+                    .filter(str -> !str.isEmpty() && !str.matches(".*\\d.*"))
+                    .collect(Collectors.toList());
+		    System.out.println(Arrays.toString(filteredList.toArray()));
+		    System.out.println("S");
+		}
 
     }
 
