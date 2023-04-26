@@ -3,6 +3,7 @@ package cs321.btree;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -480,13 +481,32 @@ public class BTree {
           if (!node.leaf) {
               inOrderTraversal(diskRead(node.child[i]), Seq, toConsole);
           }
-          if(toConsole)
+          if(toConsole) {
         	  System.out.print(SequenceUtils.longToDnaString(node.key[i].getValue(), Seq) + ":" + node.key[i].getFrequency()+ " ");
+          }
       }
       if (!node.leaf) {
           inOrderTraversal(diskRead(node.child[i]), Seq, toConsole);
       }
   }
+    
+    public void writeToFile(BTreeNode node, int Seq, PrintWriter writer) throws IOException {
+        if (node == null) {
+            return;
+        }
+        int i;
+        for (i = 0; i < node.n; i++) {
+            if (!node.leaf) {
+            	writeToFile(diskRead(node.child[i]), Seq, writer);
+            }
+            writer.println(SequenceUtils.longToDnaString(node.key[i].getValue(), Seq) + " " + node.key[i].getFrequency());
+        }
+        if (!node.leaf) {
+        	writeToFile(diskRead(node.child[i]), Seq, writer);
+        }
+        
+        writer.flush();
+    }
     
     public void printBTree(BTreeNode node) throws IOException {
         if (node != null) {

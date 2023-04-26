@@ -93,7 +93,7 @@ public class GeneBankCreateBTree
             	}
 			}
 			
-            bTree.inOrderTraversal(bTree.getRoot(), sequenceLength, false);
+		 bTree.writeToFile(bTree.getRoot(), sequenceLength, new PrintWriter(new File("results/ourDump/"+gbkFileName+".dump."+sequenceLength)));
 		}
 
     private static GeneBankCreateBTreeArguments parseArgumentsAndHandleExceptions(String[] args)
