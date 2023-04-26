@@ -13,7 +13,7 @@ echo
 for i in 1 2 3 4 5 6 7 8 9 10 20 31
 do
 	echo -n "Test-$i: Comparing $datafile.dump.$i"
-	diff -w $datafile.dump.$i results/dumpfiles/$datafile.dump.$i
+	diff -w results/ourDump/$datafile.dump.$i results/dumpfiles/$datafile.dump.$i
 	if test "$?" = "0"
 	then
 		echo "----> Test-$i PASSED!"
