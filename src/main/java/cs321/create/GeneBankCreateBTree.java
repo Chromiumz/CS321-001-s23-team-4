@@ -45,8 +45,6 @@ public class GeneBankCreateBTree
             System.err.println("Use cache: " + useCache);
             System.err.println("Cache size: " + cacheSize);
             System.err.println("Debug level: " + debugLevel);
-        }else if (debugLevel == 1){
-
         }
 
         StringBuilder sequenceBuilder = new StringBuilder();
@@ -87,13 +85,13 @@ public class GeneBankCreateBTree
             Matcher subSeq = subSeqPattern.matcher(compile.toString());
             
             while (subSeq.find()) {
-            		String match = subSeq.group(1);
-                	long key = SequenceUtils.dnaStringToLong(match);
-                	bTree.insert(key);
-            	}
-			}
-			
-		 bTree.writeToFile(bTree.getRoot(), sequenceLength, new PrintWriter(new File("results/ourDump/"+gbkFileName+".dump."+sequenceLength)));
+        		String match = subSeq.group(1);
+            	long key = SequenceUtils.dnaStringToLong(match);
+            	bTree.insert(key);
+            }
+		}
+		if(debugLevel == 1)
+			bTree.writeToFile(bTree.getRoot(), sequenceLength, new PrintWriter(new File("results/ourDump/"+gbkFileName+".dump."+sequenceLength)));
 		}
 
     private static GeneBankCreateBTreeArguments parseArgumentsAndHandleExceptions(String[] args)
