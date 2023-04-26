@@ -54,28 +54,31 @@ public class GeneBankCreateBTree
 		while (matcher.find()) {
 		    String sequence = matcher.group(1);
 		    String[] x = sequence.split("\\s+");
+		    
+		    System.out.println(sequence);
+		    
 		    List<String> filteredList = Arrays.stream(x)
                     .filter(str -> !str.isEmpty() && !str.matches(".*\\d.*"))
                     .collect(Collectors.toList());
-                    for (String subsequence : filteredList) {
-                        // Check if subsequence contains any 'N's
-                        if (subsequence.indexOf('N') == -1) {
-                            // Generate all subsequences of length k
-                            for (int i = 0; i <= subsequence.length() - sequenceLength; i++) {
-                                String dnaSubsequence = subsequence.substring(i, i + sequenceLength);
-                                //System.out.println(dnaSubsequence);
-                                // Convert DNA subsequence to long key
-                                long key = SequenceUtils.dnaStringToLong(dnaSubsequence);
-                                // Insert key into BTree
-                                bTree.insert(key);
-                                //System.out.println(key);
-                            }
-                        }
-                    }
-                    bTree.inOrderTraversal(bTree.getRoot(), sequenceLength);
-		}
+		    
+		    StringBuilder compile = new StringBuilder();
 
-    }
+		    for(String s : filteredList) {
+		    	compile.append(s);
+		    }
+		    
+            Pattern subSeqPattern = Pattern.compile("(?=([atcg]{"+sequenceLength+"}))");
+            Matcher subSeq = subSeqPattern.matcher(compile.toString());
+            
+            while (subSeq.find()) {
+            		String match = subSeq.group(1);
+                	long key = SequenceUtils.dnaStringToLong(match);
+                	bTree.insert(key);
+            	}
+			}
+			
+            bTree.inOrderTraversal(bTree.getRoot(), sequenceLength);
+		}
 
     private static GeneBankCreateBTreeArguments parseArgumentsAndHandleExceptions(String[] args)
     {
