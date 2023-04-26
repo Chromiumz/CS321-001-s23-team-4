@@ -7,7 +7,9 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import cs321.create.SequenceUtils;
 
@@ -26,10 +28,13 @@ public class BTree {
     private Cache cache;
     private boolean cacheEnabled;
 
-    public BTree(File BTreeFile, int pageSize, boolean cacheEnabled, int cacheSize) {
+    public BTree(File BTreeFile, int degree, boolean cacheEnabled, int cacheSize) {
     	this.cacheEnabled = cacheEnabled;
     	this.cache = new Cache(cacheSize);
     	
+    	this.t = degree;
+    	
+    	/*
     	//dynamic space
     	int x1 = TreeObject.getDiskSize() * 2;
     	int x2 = Long.BYTES * 2;
@@ -41,7 +46,7 @@ public class BTree {
     	
     	pageSize /= x1 + x2;
     	
-    	this.t = pageSize;
+    	this.t = pageSize;*/
         
         this.root = new BTreeNode(t, false, false);
 
@@ -115,10 +120,13 @@ public class BTree {
     public BTreeNode diskRead(long diskAddress) throws IOException {
         if (diskAddress == 0) return null;
         
-        BTreeNode moment = cache.getObject(diskAddress, true);
-        
-        if(moment != null)
-        	return moment;
+        if(cacheEnabled) {
+	        BTreeNode moment = cache.getObject(diskAddress, true);
+	        
+	        if(moment != null) {
+	        	return moment;
+	        }
+        }
         
         file.position(diskAddress);
         buffer.clear();
@@ -163,7 +171,8 @@ public class BTree {
         x.n = n;
         x.address = diskAddress;
         
-        cache.getObject(x.address, true);
+        if(cacheEnabled)
+        	cache.getObject(x.address, true);
 
         return x;
     }
@@ -201,7 +210,8 @@ public class BTree {
         buffer.flip();
         file.write(buffer);
         
-        cache.getObject(x.address, false);
+        if(cacheEnabled)
+        	cache.getObject(x.address, false);
     }
 
 
@@ -461,19 +471,20 @@ public class BTree {
 		diskWrite(root);
     }
 
-    public void inOrderTraversal(BTreeNode node, int Seq) throws IOException {
+    public void inOrderTraversal(BTreeNode node, int Seq, boolean toConsole) throws IOException {
       if (node == null) {
           return;
       }
       int i;
       for (i = 0; i < node.n; i++) {
           if (!node.leaf) {
-              inOrderTraversal(diskRead(node.child[i]), Seq);
+              inOrderTraversal(diskRead(node.child[i]), Seq, toConsole);
           }
-          System.out.print(SequenceUtils.longToDnaString(node.key[i].getValue(), Seq) + ":" + node.key[i].getFrequency()+ " ");
+          if(toConsole)
+        	  System.out.print(SequenceUtils.longToDnaString(node.key[i].getValue(), Seq) + ":" + node.key[i].getFrequency()+ " ");
       }
       if (!node.leaf) {
-          inOrderTraversal(diskRead(node.child[i]), Seq);
+          inOrderTraversal(diskRead(node.child[i]), Seq, toConsole);
       }
   }
     
@@ -698,7 +709,7 @@ public class BTree {
     *
     * @author Ernest Coy
     */
-    public class Cache {
+    public class Cache extends LinkedHashMap<Long, BTreeNode> {
 
         private static final long serialVersionUID = 1L;
         
@@ -718,20 +729,15 @@ public class BTree {
         private int maximumSize;
         
         /*
-        * The internal LinkedList.
-        */
-        private LinkedList<BTreeNode> cache;
-        
-        /*
         * Constructs a fresh cache with a given maximum size.
         *
         * @param size   The maximum size of the cache.
         */
         public Cache(int size) {
+        	super(size, 0.99f, true);
             this.cacheHits = 0;
             this.cacheRef = 0;
             this.maximumSize = size;
-            this.cache = new LinkedList<BTreeNode>();
         }
 
         /*
@@ -742,58 +748,27 @@ public class BTree {
         * @return The object in the cache. 
         */
         public BTreeNode getObject(long address, boolean cyclic) throws IOException {
-            if (cache.size() > maximumSize) {
-                cache.removeLast();
-            }
-            cacheRef++;
-            for (BTreeNode o: cache) {
-                if (o.address == address) {
-                    cacheHits++;
-                    BTreeNode save = o;
-                    this.removeObject(o);
-                    this.addObject(o);
-                    return o;
+        	BTreeNode o = cache.get(address);
+            if (o == null) {
+            	if(!cyclic) {
+            		o = diskRead(address);
+                	cache.put(address, o);
             	}
             }
-            
-            if(!cyclic) {
-	            BTreeNode eq = diskRead(address);
-	            if(eq != null) {
-	            	this.addObject(eq);
-	            	return eq;
-	            } else {
-	            	//This Node does not exist yet in the cache.
-	            	return null;
-	            }
+            return o;
+        }
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<Long, BTreeNode> eldest) {
+            boolean isFull = size() > maximumSize;
+            if (isFull) {
+                Long key = eldest.getKey();
+                BTreeNode value = eldest.getValue();
+                remove(key);
             }
-			return null;
+            return isFull;
         }
 
-        /*
-        * Adds an object to the front of the Cache.
-        *
-        * @param eq   The object to add 
-        */
-        public void addObject(BTreeNode eq) {
-            cache.addFirst(eq);
-        }
-        
-        /*
-        * Removes an object from the Cache.
-        *
-        * @param eq   The object to remove 
-        */
-        public void removeObject(BTreeNode eq) {
-            cache.remove(eq);
-        }
-
-        /*
-        * Clears the Cache 
-        */
-        public void clearCache() {
-            cache.clear();
-        }
-        
         /*
         * Converts the Cache to a helpful string of data.
         *

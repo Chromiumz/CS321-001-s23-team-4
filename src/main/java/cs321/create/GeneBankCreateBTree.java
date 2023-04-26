@@ -1,9 +1,11 @@
 package cs321.create;
 import cs321.btree.BTree;
+import cs321.btree.TreeObject;
 import cs321.common.ParseArgumentException;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,15 +26,15 @@ public class GeneBankCreateBTree
         int debugLevel = cmdArgs.getDebugLevel();
 
         // Create BTree file, if the file exists delete it to make it easier to re-run test
-        File bTreeFile = new File(gbkFileName + ".btree.data." + sequenceLength + "." + degree);
+        File bTreeFile = new File("btreeData/"+gbkFileName + ".btree.data." + sequenceLength + "." + degree);
         if (bTreeFile.exists()) {
             bTreeFile.delete();
         }
 
         // Initialize BTree
-        BTree bTree = new BTree(new File(gbkFileName + ".btree.data." + sequenceLength + "." + degree), degree);
+        BTree bTree = new BTree(new File("btreeData/"+gbkFileName + ".btree.data." + sequenceLength + "." + degree), degree, useCache, cacheSize);
         bTree.create();
-                
+        
         
         // Setup debug levels
         if (debugLevel == 0){
@@ -69,7 +71,7 @@ public class GeneBankCreateBTree
 		    String sequence = matcher.group(1);
 		    String[] x = sequence.split("\\s+");
 		    
-		    System.out.println(sequence);
+		    //System.out.println(sequence);
 		    
 		    List<String> filteredList = Arrays.stream(x)
                     .filter(str -> !str.isEmpty() && !str.matches(".*\\d.*"))
@@ -91,7 +93,7 @@ public class GeneBankCreateBTree
             	}
 			}
 			
-            bTree.inOrderTraversal(bTree.getRoot(), sequenceLength);
+            bTree.inOrderTraversal(bTree.getRoot(), sequenceLength, false);
 		}
 
     private static GeneBankCreateBTreeArguments parseArgumentsAndHandleExceptions(String[] args)
