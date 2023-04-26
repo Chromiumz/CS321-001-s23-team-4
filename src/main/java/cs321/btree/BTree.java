@@ -7,6 +7,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 import cs321.create.SequenceUtils;
 
@@ -21,8 +22,14 @@ public class BTree {
 
     private BTreeNode root;
     private int t;
+    
+    private Cache cache;
+    private boolean cacheEnabled;
 
-    public BTree(File BTreeFile, int pageSize) {    	
+    public BTree(File BTreeFile, int pageSize, boolean cacheEnabled, int cacheSize) {
+    	this.cacheEnabled = cacheEnabled;
+    	this.cache = new Cache(cacheSize);
+    	
     	//dynamic space
     	int x1 = TreeObject.getDiskSize() * 2;
     	int x2 = Long.BYTES * 2;
@@ -57,6 +64,10 @@ public class BTree {
             System.err.println(e);
         }
 
+    }
+    
+    public BTree(File BTreeFile, int pageSize) {
+    	this(BTreeFile, pageSize, false, 0);
     }
 
     /**
@@ -103,7 +114,12 @@ public class BTree {
      */
     public BTreeNode diskRead(long diskAddress) throws IOException {
         if (diskAddress == 0) return null;
-
+        
+        BTreeNode moment = cache.getObject(diskAddress, true);
+        
+        if(moment != null)
+        	return moment;
+        
         file.position(diskAddress);
         buffer.clear();
 
@@ -146,6 +162,8 @@ public class BTree {
         x.child = child;
         x.n = n;
         x.address = diskAddress;
+        
+        cache.getObject(x.address, true);
 
         return x;
     }
@@ -158,7 +176,7 @@ public class BTree {
     public void diskWrite(BTreeNode x) throws IOException {
         file.position(x.address);
         buffer.clear();
-        
+
         buffer.putInt(x.n);
 
         for (int i = 0; i < x.key.length; i++) {
@@ -182,6 +200,8 @@ public class BTree {
 
         buffer.flip();
         file.write(buffer);
+        
+        cache.getObject(x.address, false);
     }
 
 
@@ -310,6 +330,26 @@ public class BTree {
         	return leaf;
         }
         
+        @Override
+        public boolean equals(Object o) {
+        	if(o.getClass().equals(this.getClass())) {
+        		BTreeNode node = (BTreeNode) o;
+        		
+        		if(node.n != this.n)
+        			return false;
+        		
+        		for(int i = 0; i < this.n; i++) {
+        			if(node.key[i].value != this.key[i].value) {
+        				break;
+        			}
+        		}
+        		
+        		return true;
+        	}
+        	
+        	return false;
+        }
+        
         ///////////////////////////////////////////////
         //              HELPER METHODS               //
         // TRY TO AVOID USING THESE OUTSIDE OF TESTS //
@@ -420,24 +460,7 @@ public class BTree {
         
 		diskWrite(root);
     }
-    
-    /*
-    public static void main(String[] args) throws IOException {
-    	BTree tree = new BTree(new File("test15"), 200);
-    	tree.create();
-    	for(int i = 1; i < 100; i++) {
-    		tree.insert(i);
-    	}
-    	tree.insert(1);
-    	tree.insert(1);
-    	tree.insert(1);
-    	tree.insert(1);
-    	tree.insert(2);
-    	tree.insert(2);
-    	
-    	tree.inOrderTraversal(tree.root);
-    }*/
-    
+
     public void inOrderTraversal(BTreeNode node, int Seq) throws IOException {
       if (node == null) {
           return;
@@ -667,6 +690,129 @@ public class BTree {
     
     public int getMetaDataSize() {
     	return METADATA_SIZE;
+    }
+
+
+    /*
+    * An implementation of a Cache that uses a generic type working with a Java LinkedList.
+    *
+    * @author Ernest Coy
+    */
+    public class Cache {
+
+        private static final long serialVersionUID = 1L;
+        
+        /*
+        * Total number of times the cache is hit when getting an object.
+        */
+        private int cacheHits;
+        
+        /*
+        * Total number of times the cache is referenced.
+        */
+        private int cacheRef;
+        
+        /*
+        * The maximum size of the cache. This can change the effectiveness of the cache quite a bit. Higher values may lead to poor performance.
+        */
+        private int maximumSize;
+        
+        /*
+        * The internal LinkedList.
+        */
+        private LinkedList<BTreeNode> cache;
+        
+        /*
+        * Constructs a fresh cache with a given maximum size.
+        *
+        * @param size   The maximum size of the cache.
+        */
+        public Cache(int size) {
+            this.cacheHits = 0;
+            this.cacheRef = 0;
+            this.maximumSize = size;
+            this.cache = new LinkedList<BTreeNode>();
+        }
+
+        /*
+        * Gets an object in the cache and pushes it to the front, makes room for the object by deleting the tail of the cache if needed (Depending on size).
+        *
+        * @param eq   The object to get.
+        *
+        * @return The object in the cache. 
+        */
+        public BTreeNode getObject(long address, boolean cyclic) throws IOException {
+            if (cache.size() > maximumSize) {
+                cache.removeLast();
+            }
+            cacheRef++;
+            for (BTreeNode o: cache) {
+                if (o.address == address) {
+                    cacheHits++;
+                    BTreeNode save = o;
+                    this.removeObject(o);
+                    this.addObject(o);
+                    return o;
+            	}
+            }
+            
+            if(!cyclic) {
+	            BTreeNode eq = diskRead(address);
+	            if(eq != null) {
+	            	this.addObject(eq);
+	            	return eq;
+	            } else {
+	            	//This Node does not exist yet in the cache.
+	            	return null;
+	            }
+            }
+			return null;
+        }
+
+        /*
+        * Adds an object to the front of the Cache.
+        *
+        * @param eq   The object to add 
+        */
+        public void addObject(BTreeNode eq) {
+            cache.addFirst(eq);
+        }
+        
+        /*
+        * Removes an object from the Cache.
+        *
+        * @param eq   The object to remove 
+        */
+        public void removeObject(BTreeNode eq) {
+            cache.remove(eq);
+        }
+
+        /*
+        * Clears the Cache 
+        */
+        public void clearCache() {
+            cache.clear();
+        }
+        
+        /*
+        * Converts the Cache to a helpful string of data.
+        *
+        * @return The resulting string.
+        */
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+
+            sb.append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+                .append(String.format("LinkedList Cache with %d entries has been created\n", maximumSize))
+                .append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+
+            sb.append(String.format("Total number of references: %9d\n", cacheRef))
+                .append(String.format("Total number of cache hits: %7d\n", cacheHits))
+                .append(String.format("Cache hit ratio: %21.2f", ((double) cacheHits / (double) cacheRef) * 100) + "%")
+                .append("\n");
+
+            return sb.toString();
+        }
     }
 
 }
