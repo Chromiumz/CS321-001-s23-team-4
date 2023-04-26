@@ -24,15 +24,29 @@ public class GeneBankCreateBTree
         int debugLevel = cmdArgs.getDebugLevel();
 
         // Create BTree file, if the file exists delete it to make it easier to re-run test
-        File bTreeFile = new File("myBTree");
+        File bTreeFile = new File(gbkFileName + ".btree.data." + sequenceLength + "." + degree);
         if (bTreeFile.exists()) {
             bTreeFile.delete();
         }
 
         // Initialize BTree
-        BTree bTree = new BTree(new File("myBTree"), degree);
+        BTree bTree = new BTree(new File(gbkFileName + ".btree.data." + sequenceLength + "." + degree), degree);
         bTree.create();
+                
         
+        // Setup debug levels
+        if (debugLevel == 0){
+            // print diagnostic messages, help and status messages on standard error stream
+            System.err.println("Starting program...");
+            System.err.println("Degree: " + degree);
+            System.err.println("Subsequence length: " + sequenceLength);
+            System.err.println("Use cache: " + useCache);
+            System.err.println("Cache size: " + cacheSize);
+            System.err.println("Debug level: " + debugLevel);
+        }else if (debugLevel == 1){
+
+        }
+
         StringBuilder sequenceBuilder = new StringBuilder();
         
         try (BufferedReader br = new BufferedReader(new FileReader(gbkFileName))) {
@@ -102,16 +116,42 @@ public class GeneBankCreateBTree
 
     public static GeneBankCreateBTreeArguments parseArguments(String[] args) throws ParseArgumentException
     {
-            
-        boolean useCache = args[0].equals("1");
-        int degree = Integer.parseInt(args[1]);
-        String gbkFileName = args[2];
-        int subsequenceLength = Integer.parseInt(args[3]);
-        int cacheSize = useCache && args.length > 4 ? Integer.parseInt(args[4]) : 0;
-        int debugLevel = args.length > 5 ? Integer.parseInt(args[5]) : 0;
-
         if (args.length < 4) {
             throw new ParseArgumentException("Not enough arguments");
+        }
+            
+        boolean useCache = false;
+        int degree = 0;
+        String gbkFileName = null;
+        int subsequenceLength = 0;
+        int cacheSize = 0;
+        int debugLevel = 0;
+        boolean cacheSizeSpecified = false; // track if cacheSize was specified
+
+        for (String arg : args) {
+            if (arg.startsWith("--cache=")) {
+                useCache = arg.substring(8).equals("1");
+            } else if (arg.startsWith("--degree=")) {
+                degree = Integer.parseInt(arg.substring(9));
+            } else if (arg.startsWith("--gbkfile=")) {
+                gbkFileName = arg.substring(10);
+            } else if (arg.startsWith("--length=")) {
+                subsequenceLength = Integer.parseInt(arg.substring(9));
+            } else if (arg.startsWith("--cachesize=")) {
+                cacheSize = Integer.parseInt(arg.substring(12));
+                if (cacheSize < 100 || cacheSize > 10000){
+                    throw new ParseArgumentException("CacheSize must be between 100 - 10000");
+                }
+                cacheSizeSpecified = true;
+            } else if (arg.startsWith("--debug=")) {
+                debugLevel = Integer.parseInt(arg.substring(8));
+            } else {
+                throw new ParseArgumentException("Invalid argument: " + arg);
+            }
+        }
+
+        if (useCache && !cacheSizeSpecified) {
+            throw new ParseArgumentException("Cache size is required when cache is enabled");
         }
 
         if (!gbkFileName.endsWith(".gbk")) {
@@ -129,11 +169,8 @@ public class GeneBankCreateBTree
         if (subsequenceLength < 1 || subsequenceLength > 31) {
             throw new ParseArgumentException("Sequence length must be between 1 and 31");
         }
-    
-        if (debugLevel < 0 || debugLevel > 1) {
-            throw new ParseArgumentException("Debug level must be between 0 and 1");
-        }
-    
+        
+
         return new GeneBankCreateBTreeArguments(useCache, degree, gbkFileName, subsequenceLength, cacheSize, debugLevel);
     }
 
