@@ -26,13 +26,13 @@ public class GeneBankCreateBTree
         int debugLevel = cmdArgs.getDebugLevel();
 
         // Create BTree file, if the file exists delete it to make it easier to re-run test
-        File bTreeFile = new File("btreeData/"+gbkFileName + ".btree.data." + sequenceLength + "." + degree);
+        File bTreeFile = new File(gbkFileName + ".btree.data." + sequenceLength + "." + degree);
         if (bTreeFile.exists()) {
             bTreeFile.delete();
         }
 
         // Initialize BTree
-        BTree bTree = new BTree(new File("btreeData/"+gbkFileName + ".btree.data." + sequenceLength + "." + degree), degree, useCache, cacheSize);
+        BTree bTree = new BTree(new File(gbkFileName + ".btree.data." + sequenceLength + "." + degree), degree, useCache, cacheSize);
         bTree.create();
         
         
@@ -139,7 +139,7 @@ public class GeneBankCreateBTree
                 subsequenceLength = Integer.parseInt(arg.substring(9));
             } else if (arg.startsWith("--cachesize=")) {
                 cacheSize = Integer.parseInt(arg.substring(12));
-                if (cacheSize < 100 || cacheSize > 10000){
+                if (useCache && (cacheSize < 100 || cacheSize > 10000)) {
                     throw new ParseArgumentException("CacheSize must be between 100 - 10000");
                 }
                 cacheSizeSpecified = true;
@@ -150,7 +150,7 @@ public class GeneBankCreateBTree
             }
         }
 
-        if (useCache && !cacheSizeSpecified) {
+        if (useCache  == true && !cacheSizeSpecified) {
             throw new ParseArgumentException("Cache size is required when cache is enabled");
         }
 
@@ -168,6 +168,10 @@ public class GeneBankCreateBTree
     
         if (subsequenceLength < 1 || subsequenceLength > 31) {
             throw new ParseArgumentException("Sequence length must be between 1 and 31");
+        }
+            // Set cacheSize to 0 if useCache is false
+        if (!useCache) {
+            cacheSize = 0;
         }
         
 

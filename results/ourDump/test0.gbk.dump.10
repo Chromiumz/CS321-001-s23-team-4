@@ -21,6 +21,7 @@ aaaaattatc 1
 aaaaatttct 1
 aaaacaaaga 1
 aaaacaatac 1
+aaaacgagca 1
 aaaacgctac 1
 aaaacgctct 1
 aaaacggaat 1
@@ -43,6 +44,7 @@ aaaaggattt 1
 aaaaggttag 1
 aaaagtttat 1
 aaaataaaat 1
+aaaataataa 1
 aaaatagttt 1
 aaaatattca 1
 aaaatcaaat 1
@@ -68,6 +70,7 @@ aaaccaaatc 1
 aaaccacagt 1
 aaaccgccac 1
 aaaccgtcca 1
+aaacgagcag 1
 aaacgatttc 1
 aaacgctaca 1
 aaacgctctg 1
@@ -129,6 +132,7 @@ aaataaatcc 1
 aaataaattt 1
 aaataacata 1
 aaataagagt 1
+aaataataaa 1
 aaatacatac 1
 aaatagtttg 1
 aaatattcaa 1
@@ -168,6 +172,7 @@ aaatttttgc 1
 aacaaagatc 1
 aacaacccct 1
 aacaacgcgt 1
+aacaacggaa 1
 aacaagctac 1
 aacaagttct 1
 aacaatacat 1
@@ -183,7 +188,10 @@ aacagaacgc 1
 aacagcaata 1
 aacagggtct 1
 aacatacaat 1
+aacatatgta 1
+aacatattta 1
 aacatcagtt 1
+aacatcatcc 1
 aacatcattg 1
 aacatccagt 1
 aacatctacg 1
@@ -194,12 +202,14 @@ aaccacagtg 1
 aaccactctg 1
 aaccagacag 1
 aaccagcagt 1
+aaccattgcc 1
 aacccaatgg 1
 aacccagttt 1
 aacccctttg 1
 aaccctaacc 4
 aaccctctga 1
 aaccgactaa 1
+aaccgccaat 1
 aaccgccaca 1
 aaccgccact 1
 aaccgtccat 1
@@ -209,6 +219,7 @@ aaccttcttc 1
 aacgaactgc 1
 aacgaagaat 1
 aacgaagcat 1
+aacgagcagt 1
 aacgatattt 1
 aacgatcctt 1
 aacgattact 1
@@ -218,9 +229,11 @@ aacgcgtcat 1
 aacgctacaa 1
 aacgctacac 1
 aacgctctga 1
+aacggaacca 1
 aacggaatca 1
 aacggatttg 1
 aacggcaaaa 1
+aacggtatct 1
 aacgtaacga 1
 aacgtacgtc 1
 aacgtatacc 1
@@ -262,6 +275,7 @@ aagaaataca 1
 aagaacaacg 1
 aagaacagaa 1
 aagaacatcc 1
+aagaaccgcc 1
 aagaactcca 1
 aagaagaatt 1
 aagaagattg 1
@@ -273,6 +287,7 @@ aagaatgtaa 1
 aagaattatt 1
 aagaatttcg 1
 aagacagctc 1
+aagaccaaga 1
 aagaccaagt 1
 aagaccatga 1
 aagacgcgaa 1
@@ -299,8 +314,10 @@ aagcataatg 1
 aagcatcgta 1
 aagcattcac 1
 aagccaagac 1
+aagccgctga 1
 aagcgaacca 1
 aagcggtaaa 1
+aagctaaaac 1
 aagctacagt 1
 aagctagaat 1
 aagctagtgg 1
@@ -318,6 +335,7 @@ aagggaaaat 1
 aagggatgtc 1
 aaggggaaaa 1
 aaggggtgaa 1
+aagggtggat 1
 aaggtgaaag 1
 aaggttagta 1
 aaggttcaca 1
@@ -332,6 +350,7 @@ aagtggaaat 1
 aagtggacct 1
 aagttaagga 1
 aagttattgg 1
+aagttctact 1
 aagttctcac 1
 aagttcttac 1
 aagttcttct 1
@@ -345,6 +364,7 @@ aataaaagca 1
 aataaaatca 2
 aataaaatgg 1
 aataaaccaa 1
+aataaaccgc 1
 aataaagaga 1
 aataaatcct 1
 aataaatttt 1
@@ -353,6 +373,7 @@ aataactaaa 1
 aataactgct 1
 aataagagta 1
 aataataaaa 1
+aataataaac 1
 aataataccc 1
 aataatcaaa 1
 aataatcctg 1
@@ -366,6 +387,7 @@ aatacccatc 1
 aatacccccc 1
 aatactcgag 1
 aatagaaaaa 1
+aatagacaac 1
 aatagcaaga 1
 aataggtctt 1
 aatagtttga 1
@@ -492,12 +514,15 @@ acaaagatcc 1
 acaaagattt 1
 acaaataaat 1
 acaacaatgt 1
+acaacatatg 1
 acaacccctt 1
 acaacctcaa 1
 acaacgcgtc 1
+acaacggaac 1
 acaacggatt 1
 acaagaagtt 1
 acaagacagc 1
+acaagctaaa 1
 acaagctaca 1
 acaagctttc 1
 acaaggggtg 1
@@ -545,12 +570,16 @@ acatacaatg 1
 acatacaatt 1
 acataccaat 1
 acatactatt 1
+acatatgtaa 1
+acatatttag 1
 acatcagttg 1
+acatcatccg 1
 acatcattgg 1
 acatccagta 1
 acatcctgta 1
 acatctacgt 1
 acatcttcta 1
+acatgagaca 1
 acatgttgta 1
 acattagctg 1
 acattcacgg 1
@@ -560,6 +589,7 @@ acatttaatt 1
 acatttcaaa 1
 acatttctat 1
 accaaatcaa 1
+accaagaacc 1
 accaaggttc 1
 accaagtaag 1
 accaatttgt 1
@@ -577,6 +607,7 @@ accatcacca 1
 accatcacta 1
 accatgacac 1
 accatgactg 1
+accattgccg 1
 accatttccg 1
 acccaatgat 1
 acccaatggg 1
@@ -597,6 +628,7 @@ acccttggaa 1
 accgactaaa 1
 accgagctgg 1
 accgcatgct 1
+accgccaata 1
 accgccacac 1
 accgccactt 1
 accgctgatt 1
@@ -607,8 +639,10 @@ acctataaat 1
 acctatcagc 1
 acctcaaagc 1
 acctcaacaa 1
+acctcaggtt 1
 acctccgctg 1
 acctccgttg 1
+acctcgaaaa 1
 acctctaaac 1
 acctgatttg 1
 acctgtcacc 1
@@ -620,6 +654,7 @@ acgaaataaa 1
 acgaactgcg 1
 acgaagaatc 1
 acgaagcatc 1
+acgagcagta 1
 acgatatttt 1
 acgatcctat 1
 acgatccttc 1
@@ -638,6 +673,7 @@ acgcgtcata 1
 acgctacaag 1
 acgctacacc 1
 acgctctgaa 1
+acggaaccat 1
 acggaatcac 1
 acggacgcat 1
 acggacgttc 1
@@ -646,6 +682,7 @@ acggatcaca 1
 acggatttgt 1
 acggcaaaaa 1
 acggcaccgg 1
+acggtatctc 1
 acgtaacgaa 1
 acgtacgtca 1
 acgtactttt 1
@@ -671,6 +708,7 @@ actaaactga 1
 actaaagaag 1
 actaacgaag 1
 actaacggca 1
+actaagggtg 1
 actaattcaa 1
 actacgtgaa 1
 actactccat 1
@@ -771,6 +809,7 @@ agaacaatta 1
 agaacagaac 1
 agaacatcca 1
 agaaccgact 1
+agaaccgcca 1
 agaacgcaaa 1
 agaacgttct 1
 agaactccaa 1
@@ -796,6 +835,7 @@ agaatgtaat 1
 agaattatta 1
 agaattcgaa 1
 agaatttcga 1
+agacaacata 1
 agacaagaca 1
 agacaattga 1
 agacagaaga 1
@@ -803,6 +843,7 @@ agacagctca 1
 agacagttac 1
 agacattgaa 1
 agacatttaa 1
+agaccaagaa 1
 agaccaagta 1
 agaccatgac 1
 agacgatgaa 1
@@ -827,6 +868,7 @@ agaggcttag 1
 agagtaatgt 1
 agagtcaatg 1
 agagtcgccc 1
+agagttacaa 1
 agagttcaaa 1
 agagtttact 1
 agataactca 1
@@ -836,6 +878,7 @@ agatagcatc 1
 agatccaaaa 1
 agatcctaat 1
 agatcggaat 1
+agatctcaac 1
 agatctcaag 1
 agatggaaaa 1
 agatggtgaa 1
@@ -867,6 +910,7 @@ agcaggatgt 1
 agcagtaaat 1
 agcagtactc 1
 agcagtagca 1
+agcagtagtc 1
 agcagtggca 1
 agcataatgt 1
 agcatcgtaa 1
@@ -883,6 +927,7 @@ agccagcagt 1
 agcccgttct 1
 agccctgtct 1
 agcccttctc 1
+agccgctgaa 1
 agcctccaga 1
 agcgaaccaa 1
 agcgcgtttg 1
@@ -890,6 +935,7 @@ agcgctgcca 1
 agcggacaaa 1
 agcggtaaaa 1
 agcgtggatg 1
+agctaaaacg 1
 agctacagtt 1
 agctactata 1
 agctagaata 1
@@ -900,6 +946,7 @@ agctcaaata 1
 agctcctcat 1
 agctccttgc 1
 agctctcatt 1
+agctctgcat 1
 agctgacgca 1
 agctggagaa 1
 agctggcttt 1
@@ -914,6 +961,7 @@ aggaaaaacg 1
 aggaagatcg 1
 aggacattca 1
 aggaggttga 1
+aggatatacc 1
 aggatgccta 1
 aggatttgcc 1
 aggattttct 1
@@ -927,6 +975,7 @@ aggggaaaag 1
 aggggtgaat 1
 agggtacgga 1
 agggtctagt 1
+agggtggata 1
 aggtaacgtt 1
 aggtaatttc 1
 aggtagaatt 1
@@ -939,6 +988,7 @@ aggtgggtat 1
 aggttagtag 1
 aggttcacaa 1
 aggttgaaaa 1
+aggtttagat 1
 aggtttgaaa 1
 agtaaagaag 1
 agtaaataaa 1
@@ -950,12 +1000,14 @@ agtactcgag 1
 agtagatttt 1
 agtagcaatt 1
 agtagctctc 1
+agtagtcagc 1
 agtagtggcc 1
 agtagtgtag 2
 agtataagtt 1
 agtataccct 1
 agtcaatgaa 1
 agtcaattaa 1
+agtcagctct 1
 agtcatcggg 1
 agtcgaatga 1
 agtcgccctc 1
@@ -984,12 +1036,14 @@ agtgttagat 1
 agttaaacag 1
 agttaactac 1
 agttaaggac 1
+agttacaagc 1
 agttacggat 1
 agttattgga 1
 agttcaaatc 1
 agttcatctt 1
 agttccaatc 1
 agttccaatt 1
+agttctacta 1
 agttctagaa 1
 agttctcacc 1
 agttctcatt 1
@@ -1021,6 +1075,7 @@ ataaaatcaa 1
 ataaaatcat 1
 ataaaatgga 1
 ataaaccaaa 1
+ataaaccgcc 1
 ataaactcgg 1
 ataaacttat 1
 ataaagagag 1
@@ -1032,6 +1087,7 @@ ataaattggg 1
 ataaattttc 1
 ataaattttg 1
 ataacataca 1
+ataacatcat 1
 ataaccactc 1
 ataacgtaac 1
 ataactaaaa 1
@@ -1040,6 +1096,7 @@ ataactgctt 1
 ataagagtaa 1
 ataagttctt 1
 ataataaaat 1
+ataataaacc 1
 ataataacta 1
 ataataccca 1
 ataatcaaac 1
@@ -1066,6 +1123,7 @@ atacccccca 1
 ataccctata 1
 ataccctcag 1
 atacctataa 1
+atacctcgaa 1
 ataccttctt 1
 atacgcaacg 1
 atactaacgg 1
@@ -1078,6 +1136,7 @@ atacttatgg 1
 atacttcaat 1
 atagaaaaat 1
 atagaacttt 1
+atagacaaca 1
 atagcaagaa 1
 atagcaaggg 1
 atagcatctc 1
@@ -1088,6 +1147,7 @@ atagtgaacc 1
 atagtttgat 1
 atataacgta 1
 atataattca 1
+atatacctcg 1
 atatactggc 1
 atatagtcaa 1
 atatcaagaa 1
@@ -1098,6 +1158,7 @@ atatgactta 1
 atatgagaac 1
 atatgcatat 1
 atatggatag 1
+atatgtaaca 1
 atattaacgc 1
 atattaagaa 1
 atattagccc 1
@@ -1106,6 +1167,7 @@ atattcaaga 1
 atattctgga 1
 atattgagaa 1
 atattgtcag 1
+atatttagga 1
 atatttccag 1
 atatttgctt 1
 atattttaac 1
@@ -1133,6 +1195,7 @@ atcagttcca 1
 atcagttgtg 1
 atcataaatt 1
 atcatcacct 1
+atcatccgtg 1
 atcatcgcta 1
 atcatctaat 1
 atcattggca 1
@@ -1148,10 +1211,12 @@ atcccaaagt 1
 atcccagaaa 1
 atcccattag 1
 atccctttca 1
+atccgtgcaa 1
 atcctaatga 1
 atcctagtag 1
 atcctatcgg 1
 atcctatttc 1
+atcctccata 1
 atcctgcaaa 1
 atcctgccaa 1
 atcctggcga 1
@@ -1179,15 +1244,18 @@ atctacgtat 1
 atctagtagt 1
 atctattcat 1
 atctattggc 1
+atctcaacaa 1
 atctcaagag 1
 atctcaagtt 1
 atctcacaat 1
 atctcagtcg 1
 atctccacaa 1
+atctccacct 1
 atctcgatga 1
 atctcgctat 1
 atctcgtttt 1
 atctctttct 1
+atctgaagcc 1
 atctgatatt 1
 atctgatcgt 1
 atctgatgcg 1
@@ -1253,6 +1321,7 @@ atggttaaag 1
 atggttatac 1
 atggttctcc 1
 atgtaaaagc 1
+atgtaacata 1
 atgtaataat 1
 atgtaatact 1
 atgtagcatt 1
@@ -1339,6 +1408,7 @@ attgacactg 1
 attgactctc 1
 attgactgat 1
 attgagaata 1
+attgccgaca 1
 attgcgtgcg 1
 attgctccag 1
 attgctctaa 1
@@ -1365,6 +1435,7 @@ atttaatctc 1
 atttaatttt 1
 atttagaaag 1
 atttagaagc 1
+atttaggata 1
 atttagtttt 1
 atttatagca 1
 atttatgata 1
@@ -1458,8 +1529,10 @@ caaatgttat 1
 caaattaatg 1
 caaatttcat 1
 caaatttcca 1
+caacaacgga 1
 caacaagttc 1
 caacaatgtc 1
+caacatatgt 1
 caacatcagt 1
 caacatctac 1
 caacccaatg 1
@@ -1470,7 +1543,9 @@ caacgatatt 1
 caacgatcct 1
 caacgattac 1
 caacgcgtca 1
+caacggaacc 1
 caacggattt 1
+caacggtatc 1
 caacgtccac 1
 caacgtgact 1
 caacgttact 1
@@ -1478,17 +1553,20 @@ caacttatgt 2
 caacttcatc 1
 caacttcgaa 1
 caagaaaacg 1
+caagaaccgc 1
 caagaagatt 1
 caagaagcat 1
 caagaagttc 1
 caagaatgta 1
 caagaatttc 1
 caagacagct 1
+caagaccaag 1
 caagaccatg 1
 caagactctc 1
 caagagctat 1
 caagagtcaa 1
 caagccaaga 1
+caagctaaaa 1
 caagctacag 1
 caagctttca 1
 caagggatgt 1
@@ -1505,6 +1583,7 @@ caataaaact 1
 caataataaa 1
 caatacatac 1
 caataccccc 1
+caatagacaa 1
 caatagcaag 1
 caatattaac 1
 caatattagc 1
@@ -1568,6 +1647,7 @@ cacccaatga 1
 caccgctgat 1
 caccggtgat 1
 cacctcaaca 1
+cacctcaggt 1
 cacctccgtt 1
 cacctttgaa 1
 cacgccctat 1
@@ -1645,16 +1725,19 @@ cagcgtggat 1
 cagctactat 1
 cagctcaaat 1
 cagctcctca 1
+cagctctgca 1
 cagcttcaga 1
 caggatgcct 1
 cagggtctag 1
 caggtaacgt 1
 caggtatgaa 1
 caggtgaacc 1
+caggtttaga 1
 cagtaaataa 1
 cagtaacacc 1
 cagtactcga 1
 cagtagcaat 1
+cagtagtcag 1
 cagtataagt 1
 cagtcgtcgc 1
 cagtctctga 1
@@ -1688,18 +1771,22 @@ catataacgt 1
 catatcctat 1
 catatgactt 1
 catatgagaa 1
+catatgtaac 1
 catattgaga 1
+catatttagg 1
 catatttgct 1
 catatttttc 1
 catcaccata 1
 catcacctcc 1
 catcactaga 1
 catcagttgt 1
+catcatccgt 1
 catcatcgct 1
 catcattggc 1
 catccagtat 1
 catccatctc 1
 catcccagaa 1
+catccgtgca 1
 catcctgtag 1
 catcgctaca 1
 catcggggct 1
@@ -1714,6 +1801,7 @@ catctcacaa 1
 catctccaca 1
 catctcgcta 1
 catctctttc 1
+catctgaagc 1
 catctgtcag 1
 catcttctac 1
 catcttctga 1
@@ -1722,6 +1810,7 @@ catctttttt 1
 catgacacag 1
 catgactcag 1
 catgactggg 1
+catgagacag 1
 catgctatta 1
 catggaacca 1
 catggattca 1
@@ -1742,6 +1831,7 @@ cattcactta 1
 cattcatctc 1
 cattcttcaa 1
 cattgaagga 1
+cattgccgac 1
 cattgcttcc 1
 cattggcatg 1
 cattgtgtcg 1
@@ -1764,11 +1854,13 @@ ccaaatcaag 1
 ccaaatgcat 1
 ccaacatcta 1
 ccaacttatg 1
+ccaagaaccg 1
 ccaagaattt 1
 ccaagaccat 1
 ccaaggttca 1
 ccaagtaaga 1
 ccaataaaac 1
+ccaatagaca 1
 ccaatattaa 1
 ccaatcatct 1
 ccaatcccaa 1
@@ -1793,6 +1885,7 @@ ccacagtgcg 1
 ccacatgttg 1
 ccaccatcac 1
 ccacctcaac 1
+ccacctcagg 1
 ccacgcccta 1
 ccacgtcaga 1
 ccacgttgta 1
@@ -1839,6 +1932,7 @@ ccattagttc 1
 ccattcaaaa 1
 ccattcatct 1
 ccattcttca 1
+ccattgccga 1
 ccattgcttc 1
 ccattgtgtc 1
 ccatttatga 1
@@ -1883,13 +1977,16 @@ ccctttcaat 1
 ccctttccat 1
 ccctttgatg 1
 ccgacagcac 1
+ccgacatgag 1
 ccgacctttt 1
 ccgactaaag 1
 ccgagagtcg 1
 ccgagctggc 1
 ccgcatgcta 1
+ccgccaatag 1
 ccgccacact 1
 ccgccactta 1
+ccgctgaagt 1
 ccgctgatta 1
 ccgctgctgc 1
 ccgggtctgt 1
@@ -1899,6 +1996,7 @@ ccgtaagaaa 1
 ccgtaatgat 1
 ccgtaatttt 1
 ccgtccatcc 1
+ccgtgcaaga 1
 ccgttaccca 1
 ccgttcaatg 1
 ccgttctttg 1
@@ -1921,6 +2019,7 @@ cctatttctt 1
 cctcaaagct 1
 cctcaacaag 1
 cctcagccac 1
+cctcaggttt 1
 cctcatattt 1
 cctccaaact 1
 cctccagaga 1
@@ -1928,6 +2027,7 @@ cctccgctgc 1
 cctccgttgc 1
 cctcctgttt 1
 cctcctttgt 1
+cctcgaaaat 1
 cctcgaaacg 1
 cctcgtacga 1
 cctctaaact 1
@@ -1964,6 +2064,7 @@ cctttgatga 1
 cctttgtcga 1
 cctttttttt 1
 cgaaaaaaaa 1
+cgaaaataat 1
 cgaaacgatt 1
 cgaaataaag 1
 cgaacaccac 1

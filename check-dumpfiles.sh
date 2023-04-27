@@ -17,6 +17,8 @@ do
 	if test "$?" = "0"
 	then
 		echo "----> Test-$i PASSED!"
+	else
+		echo "----> Test-$i FAILED!"
 	fi
 done
 echo

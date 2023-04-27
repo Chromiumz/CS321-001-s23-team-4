@@ -39,7 +39,7 @@ public class BTreeTest
     	if(newTree.getRoot() == null) {
 			 fail("BTree is null after constructed.");
 			}
-    	assertEquals(4, newTree.getDegree());
+    	assertEquals(200, newTree.getDegree());
     	}
     	catch (Exception e) {
     		fail(e.getMessage());
