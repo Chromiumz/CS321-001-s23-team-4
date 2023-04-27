@@ -168,7 +168,7 @@ public class BTree {
         x.address = diskAddress;
         
         if(cacheEnabled)
-        	cache.getObject(x.address);
+        	cache.append(x);
 
         return x;
     }
@@ -256,7 +256,7 @@ public class BTree {
         file.write(buffer);
         
         if(cacheEnabled)
-        	cache.getObject(x.address);
+        	cache.append(x);
     }
     
     /**
@@ -859,6 +859,11 @@ public class BTree {
             }
             
             return o;
+        }
+        
+        public void append(BTreeNode x) {
+        	cache.remove(x.address);
+        	cache.put(x.address, x);
         }
 
         @Override
