@@ -7,7 +7,6 @@ import java.io.FileReader;
 import cs321.btree.BTree;
 import cs321.btree.BTree.Tuple;
 import cs321.common.ParseArgumentException;
-import cs321.common.ParseArgumentUtils;
 import cs321.create.SequenceUtils;
 
 public class GeneBankSearchBTree
@@ -32,6 +31,8 @@ public class GeneBankSearchBTree
         StringBuilder sb = new StringBuilder();
         while ((line = reader.readLine()) != null) {
         	int total = 0;
+            int tot1 = 0;
+            int tot2 = 0;
         	long sequence = SequenceUtils.dnaStringToLong(line);
         	
         	Tuple n1 = bTree.search(bTree.getRoot(), sequence);
@@ -39,13 +40,22 @@ public class GeneBankSearchBTree
         	
         	if(n1 != null)
         		total += n1.getNode().getKey(n1.getIndex()).getFrequency();
+                tot1 += n1.getNode().getKey(n1.getIndex()).getFrequency();;
         	if(n2 != null)
         		total += n2.getNode().getKey(n2.getIndex()).getFrequency();
+                tot2 += n2.getNode().getKey(n2.getIndex()).getFrequency();
         	
         	sb.append(String.format("%s %d%n", line, total));
+
+            if(debugLevel == 1){
+                System.out.println("Sequence: " + line + "| Original: " + tot1 + "| Compliment: " + tot2 + "| Total: " + total);
+            }
+    
         }
-        
-        System.out.println(sb.toString());
+
+        if(debugLevel == 0){
+            System.out.println(sb.toString());
+        }
         
         reader.close();
 
@@ -57,7 +67,7 @@ public class GeneBankSearchBTree
         try
         {
             geneBankSearchBTreeArguments = parseArguments(args);
-            System.out.println("Success");
+
         }
         catch (ParseArgumentException e)
         {
@@ -98,10 +108,16 @@ public class GeneBankSearchBTree
                 degree = Integer.parseInt(arg.substring(9));
             } else if (arg.startsWith("--btreefile=")) {
                 btreeFile = new File(arg.substring(12));
+                if (!btreeFile.exists()) {
+                    throw new ParseArgumentException("BTree file does not exist");
+                }
             } else if (arg.startsWith("--length=")) {
                 subsequenceLength = Integer.parseInt(arg.substring(9));
             } else if (arg.startsWith("--queryfile=")) {
                 queryFile = new File(arg.substring(12));
+                if (!queryFile.exists()) {
+                    throw new ParseArgumentException("Query file does not exist");
+                }
             } else if (arg.startsWith("--cachesize=")) {
                 cacheSize = Integer.parseInt(arg.substring(12));
                 if (useCache && (cacheSize < 100 || cacheSize > 10000)) {
