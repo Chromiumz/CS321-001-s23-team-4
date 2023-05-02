@@ -301,7 +301,7 @@ public class BTree {
      * @author Ernest
      *
      */
-    class BTreeNode {
+    public class BTreeNode {
         private long address;
         private TreeObject[] key;
         private long[] child;
@@ -527,7 +527,7 @@ public class BTree {
         }
     }
     
-    class Tuple {
+    public class Tuple {
     	private BTreeNode node;
     	private int index;
     	

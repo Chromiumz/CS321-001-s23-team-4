@@ -1,10 +1,14 @@
 package cs321.search;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 
 import cs321.btree.BTree;
+import cs321.btree.BTree.Tuple;
 import cs321.common.ParseArgumentException;
 import cs321.common.ParseArgumentUtils;
+import cs321.create.SequenceUtils;
 
 public class GeneBankSearchBTree
 {
@@ -21,6 +25,29 @@ public class GeneBankSearchBTree
         int cacheSize = cmdArgs.getCacheSize();
         int debugLevel = cmdArgs.getDebugLevel();
 
+        BTree bTree = new BTree(btreeFile, degree, useCache, cacheSize);
+
+        BufferedReader reader = new BufferedReader(new FileReader(queryFile));
+        String line;
+        StringBuilder sb = new StringBuilder();
+        while ((line = reader.readLine()) != null) {
+        	int total = 0;
+        	long sequence = SequenceUtils.dnaStringToLong(line);
+        	
+        	Tuple n1 = bTree.search(bTree.getRoot(), sequence);
+        	Tuple n2 = bTree.search(bTree.getRoot(), SequenceUtils.getComplement(sequence, sequenceLength));
+        	
+        	if(n1 != null)
+        		total += n1.getNode().getKey(n1.getIndex()).getFrequency();
+        	if(n2 != null)
+        		total += n2.getNode().getKey(n2.getIndex()).getFrequency();
+        	
+        	sb.append(String.format("%s %d%n", line, total));
+        }
+        
+        System.out.println(sb.toString());
+        
+        reader.close();
 
     }
 
@@ -44,6 +71,7 @@ public class GeneBankSearchBTree
         System.err.println("java -jar build/libs/GeneBankSearchBTree.jar --cache=<0/1> --degree=<btree-degree>"
         + " --btreefile=<b-tree-file> --length=<sequence-length> --queryfile=<query-file>" 
         + " [--cachesize=<n>] [--debug=0|1]");
+        System.err.println(errorMessage);
         System.exit(1);
     }
 
