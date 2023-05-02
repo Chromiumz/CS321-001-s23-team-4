@@ -5,6 +5,11 @@ import java.io.IOException;
 import cs321.btree.BTree.BTreeNode;
 import cs321.btree.BTree.Tuple;
 
+/**
+ * This interface is deprecated because we decided to use a different implementation style of a BTree
+ * that did not rely on the book or the provided psuedocode.
+ */
+@Deprecated(forRemoval=true)
 public interface BTreeInterface {
 
     /**

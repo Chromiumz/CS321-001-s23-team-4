@@ -173,6 +173,12 @@ public class BTree {
         return x;
     }
     
+    /**
+     * Reads a node from the disk and returns a Node object built from it.
+     * @param diskAddress the byte offset for the node in the data file
+     * @return the Node object
+     * @throws IOException
+     */
     public BTreeNode diskForceRead(long diskAddress) throws IOException {
         if (diskAddress == 0) return null;
         
@@ -545,12 +551,31 @@ public class BTree {
     	}
     }
     
+    /**
+     * Must be called after creation of a BTree.
+     * 
+     * This method could have been removed and merged with the constructor.
+     * 
+     * @throws IOException If something goes wrong while using the BTree file.
+     */
+    @Deprecated(forRemoval=true)
     public void create() throws IOException {
         root = new BTreeNode(t, true, true);
         
 		diskWrite(root);
     }
 
+    /**
+     * Performs an in-order traversal on the BTree starting at the given node.
+     * 
+     * Citation:
+     * Initial creation assisted by ChatGPT (Very bare-bones) we added more functionality.
+     * 
+     * @param node The node to start from.
+     * @param Seq The sequence length
+     * @param toConsole Whether or not this should print to the console
+     * @throws IOException If something goes wrong while reading the BTree file.
+     */
     public void inOrderTraversal(BTreeNode node, int Seq, boolean toConsole) throws IOException {
       if (node == null) {
           return;
@@ -569,6 +594,17 @@ public class BTree {
       }
   }
     
+    /**
+     * Performs an in-order traversal on the BTree starting at the given node and writes each node via a PrintWriter.
+     * 
+     * Citation:
+     * Initial creation assisted by ChatGPT (Very bare-bones) we added more functionality.
+     * 
+     * @param node The node to start from
+     * @param Seq The sequence length
+     * @param writer The writer set with a File to write to
+     * @throws IOException If something goes wrong while reading the BTree file.
+     */
     public void writeToFile(BTreeNode node, int Seq, PrintWriter writer) throws IOException {
         if (node == null) {
             return;
@@ -587,6 +623,15 @@ public class BTree {
         writer.flush();
     }
     
+    /**
+     * Dumps the whole BTree in JSON format. Useful for debugging.
+     * 
+     * Citation:
+     * Initial creation assisted by ChatGPT (Very bare-bones) we added more functionality.
+     * 
+     * @param node The node to start from
+     * @throws IOException If something goes wrong while reading the BTree file.
+     */
     public void printBTree(BTreeNode node) throws IOException {
         if (node != null) {
             // Convert the node to a JSON string
@@ -787,25 +832,52 @@ public class BTree {
         }
     }
     
+    ///////////////////////////////////////////////
+    //                 GETTERS                   //
+    // THESE GIVE YOU MOST THE REQUIRED VALUES   //
+    //       TO MODIFY A BTREE DURING RUNTIME    //
+    ///////////////////////////////////////////////
+    
+    /**
+     * Get the root of the BTree
+     * 
+     * @return The root node.
+     */
     public BTreeNode getRoot() {
     	return root;
     }
     
+    /**
+     * Get the degree of a BTree.
+     * 
+     * @return The degree
+     */
     public int getDegree() {
     	return t;
     }
     
+    /**
+     * Get the node size of the BTree
+     * 
+     * @return The node size
+     */
     public int getNodeSize() {
     	return nodeSize;
     }
     
+    /**
+     * Get the metadata size
+     * 
+     * @return The metadata size
+     */
     public int getMetaDataSize() {
     	return METADATA_SIZE;
     }
 
 
     /*
-    * An implementation of a Cache that uses a generic type working with a Java LinkedList.
+    * An implementation of a Cache that uses a long and a BTreeNode to store elements working with a Java LinkedHashMap. The choice
+    * of this data structure was to allow the cache to get extremely large and still maintain easy and quick access.
     *
     * @author Ernest Coy
     */
@@ -861,11 +933,20 @@ public class BTree {
             return o;
         }
         
+        /**
+         * Forces a node into the cache
+         * 
+         * @param x The node to append.
+         */
         public void append(BTreeNode x) {
         	cache.remove(x.address);
         	cache.put(x.address, x);
         }
 
+        /**
+         * Citation:
+         * This was a helpful parent method supplied by ChatGPT.
+         */
         @Override
         protected boolean removeEldestEntry(Map.Entry<Long, BTreeNode> eldest) {
             boolean isFull = size() > maximumSize;
@@ -875,26 +956,6 @@ public class BTree {
                 remove(key);
             }
             return isFull;
-        }
-
-        /*
-        * Converts the Cache to a helpful string of data.
-        *
-        * @return The resulting string.
-        */
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-
-            sb.append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
-                .append(String.format("LinkedList Cache with %d entries has been created\n", maximumSize))
-                .append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-
-            sb.append(String.format("Total number of references: %9d\n", cacheRef))
-                .append(String.format("Total number of cache hits: %7d\n", cacheHits))
-                .append(String.format("Cache hit ratio: %21.2f", ((double) cacheHits / (double) cacheRef) * 100) + "%")
-                .append("\n");
-
-            return sb.toString();
         }
     }
 
