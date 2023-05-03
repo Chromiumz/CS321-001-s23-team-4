@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 
 import cs321.btree.BTree;
+import cs321.btree.TreeObject;
 import cs321.btree.BTree.Tuple;
 import cs321.common.ParseArgumentException;
 import cs321.create.SequenceUtils;
@@ -24,6 +25,21 @@ public class GeneBankSearchBTree
         int cacheSize = cmdArgs.getCacheSize();
         int debugLevel = cmdArgs.getDebugLevel();
 
+        if(degree == 0) {
+    	    int pageSize = 4096;
+    	    int x1 = TreeObject.getDiskSize() * 2;
+	    	int x2 = Long.BYTES * 2;
+	    	
+	    	//constant space
+	    	int x3 = Integer.BYTES + 1 + TreeObject.getDiskSize() * -1;
+	    	
+	    	pageSize -= x3;
+	    	
+	    	pageSize /= x1 + x2;
+	    	
+	    	degree = pageSize;
+       }
+        
         BTree bTree = new BTree(btreeFile, degree, useCache, cacheSize);
 
         BufferedReader reader = new BufferedReader(new FileReader(queryFile));
@@ -143,11 +159,7 @@ public class GeneBankSearchBTree
         if (degree < 0) {
             throw new ParseArgumentException("Degree must be >= 0");
         }
-    
-        if (degree == 0) {
-            degree = 128;
-        }
-    
+
         if (subsequenceLength < 1 || subsequenceLength > 31) {
             throw new ParseArgumentException("Sequence length must be between 1 and 31");
         }

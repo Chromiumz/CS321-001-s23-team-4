@@ -35,23 +35,9 @@ public class BTree {
     public BTree(File BTreeFile, int degree, boolean cacheEnabled, int cacheSize) {
     	this.cacheEnabled = cacheEnabled;
     	this.cache = new Cache(cacheSize);
-    	
+
     	this.t = degree;
     	
-    	/*
-    	//dynamic space
-    	int x1 = TreeObject.getDiskSize() * 2;
-    	int x2 = Long.BYTES * 2;
-    	
-    	//constant space
-    	int x3 = Integer.BYTES + 1 + TreeObject.getDiskSize() * -1;
-    	
-    	pageSize -= x3;
-    	
-    	pageSize /= x1 + x2;
-    	
-    	this.t = pageSize;*/
-        
         this.root = new BTreeNode(t, false, false);
 
         nodeSize = root.getDiskSize();
