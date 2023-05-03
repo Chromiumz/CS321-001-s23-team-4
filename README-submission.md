@@ -4,8 +4,8 @@
 
 Last Name       | First Name      | GitHub User Name
 --------------- | --------------- | --------------------
-TBD             | TBD             | TBD
-TBD             | TBD             | TBD
+Wolf            | Aria            | ariajw
+Coy             | Ernest          | Chromiumz
 Velasquez       | Brandon         | BrandonFVelasquez
 
 # Test Results
@@ -24,7 +24,7 @@ Using a cachesize of 100 for the above command it took ~34 seconds.
 For the test data `test5.gbk`, how much did a Cache of size 500 improve your performance compared to no cache? 
 Using a cachesize of 500 for the above command, it took ~31 seconds.
 For the test data `test5.gbk`, how much did a Cache of size 5000 improve your performance compared to no cache?
-Using a cachesize of 500 for the above command, it took ~16 seconds.
+Using a cachesize of 5000 for the above command, it took ~16 seconds.
 
 # AWS Notes
 It was interesting working with AWS. The setup was a little tricky, especially when trying to clone the project
@@ -37,8 +37,9 @@ compare it to using a cache vs not using a cache.
 
 Provide a reflection by each of the team member (in a separate subsection)
 
-## Reflection (Team member name: )
-## Reflection (Team member name: )
+## Reflection (Team member name: Aria Wolf)
+## Reflection (Team member name: Ernest Coy)
+This project required a lot of high end decisions. Getting stuck on the BTree implemetion due to a simple math error during the disk read led to our BTree implemention citing another source rather than the projects psuedocode, just so we could know where exactly things were going wrong. For this project I was mostly in charge of manipulating data, selecting datastructures and styles to use. I proposed the solution of Regex to read in the test files and the LinkedHashMap for a lighting fast cache as well as an organized method to retrieve data in searches for both databases and BTree files. Brandon ensured that everything was ready to run before I came up with an implementation. When an issue occured I was quick to respond with potential issues and if my proposed solutions didn't fix it I would end up using some debugging techniques to get things under control. Unfortunately we did lack testing in the end. Though in a way we tried to maintain a sense of how our code was functioning by working up to the big tests files one at a time. This for the most part worked and I think it saved us a lot of time by the end which ultimately led to the success of all major tests.
 ## Reflection (Team member name: Brandon Velasquez)
 This project was interesting to complete. Luckily, I had a great team and teammate in Ernest who has had a lot more experience than me coding.
 I was able to understand the concepts better just by being able to work with him. This project was very hard, and a lot of different files, managing it, etc.
