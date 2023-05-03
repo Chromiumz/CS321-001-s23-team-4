@@ -29,15 +29,17 @@ public class GeneBankSearchBTree
         BufferedReader reader = new BufferedReader(new FileReader(queryFile));
         String line;
         StringBuilder sb = new StringBuilder();
+        
         while ((line = reader.readLine()) != null) {
+        	line = line.replaceAll("\n", "").toLowerCase();
         	int total = 0;
             int tot1 = 0;
             int tot2 = 0;
         	long sequence = SequenceUtils.dnaStringToLong(line);
         	
         	Tuple n1 = bTree.search(bTree.getRoot(), sequence);
-        	Tuple n2 = bTree.search(bTree.getRoot(), SequenceUtils.getComplement(sequence, sequenceLength));
-        	
+          	Tuple n2 = bTree.search(bTree.getRoot(), SequenceUtils.getComplement(sequence, sequenceLength));
+          	
         	if(n1 != null) {
         		total += n1.getNode().getKey(n1.getIndex()).getFrequency();
                 tot1 += n1.getNode().getKey(n1.getIndex()).getFrequency();;
@@ -50,7 +52,7 @@ public class GeneBankSearchBTree
         	sb.append(String.format("%s %d%n", line, total));
 
             if(debugLevel == 1){
-                System.out.println("Sequence: " + line + "| Original: " + tot1 + "| Compliment: " + tot2 + "| Total: " + total);
+                //System.out.println("Sequence: " + line + "| Original: " + tot1 + "| Compliment: " + tot2 + "| Total: " + total);
             }
     
         }

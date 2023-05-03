@@ -40,7 +40,6 @@ public class GeneBankCreateBTree
         BTree bTree = new BTree(new File(gbkFileName + ".btree.data." + sequenceLength + "." + degree), degree, useCache, cacheSize);
         bTree.create();
         
-        
         // Setup debug levels
         if (debugLevel == 0){
             // print diagnostic messages, help and status messages on standard error stream
@@ -100,6 +99,9 @@ public class GeneBankCreateBTree
 		
 		Connection connection = null;
 		
+		
+		System.out.println(bTree.diskForceRead(bTree.getRoot().getAddress()).toJSONData());
+		
 		try {
 			String basePath = "results/ourDatabase";
 			String dbName = gbkFileName + "." + sequenceLength + ".db";
@@ -124,6 +126,8 @@ public class GeneBankCreateBTree
 		} catch (SQLException e) {
 			System.out.println(e);
 		}
+		
+		System.out.println(bTree.diskForceRead(9424).toJSONData());
     }
 
     private static GeneBankCreateBTreeArguments parseArgumentsAndHandleExceptions(String[] args)

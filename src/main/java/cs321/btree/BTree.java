@@ -91,6 +91,8 @@ public class BTree {
         tmpbuffer.clear();
         file.read(tmpbuffer);
 
+       
+        
         tmpbuffer.flip();
 
         rootAddress = tmpbuffer.getLong();
@@ -505,9 +507,6 @@ public class BTree {
         	
         	String childJSON = "";
         	for(int i = 0; i < child.length; i++) {
-        		if(child[i] == 0) { 
-        			continue;
-        		}
         		childJSON += String.format("\t\t{\n\t\t\taddress: %d\n\t\t},\n", child[i]);
         	}
         	
@@ -588,8 +587,10 @@ public class BTree {
           if (!node.leaf) {
               inOrderTraversal(diskRead(node.child[i]), Seq, toConsole);
           }
+          if(SequenceUtils.longToDnaString(node.key[i].getValue(), Seq).equals("tttt"))
+        	  System.out.println(node.address);
           if(toConsole) {
-        	  System.out.print(SequenceUtils.longToDnaString(node.key[i].getValue(), Seq) + ":" + node.key[i].getFrequency()+ " ");
+        	  System.out.println(SequenceUtils.longToDnaString(node.key[i].getValue(), Seq) + ":" + node.key[i].getFrequency()+ " ");
           }
       }
       if (!node.leaf) {
@@ -617,6 +618,7 @@ public class BTree {
             if (!node.leaf) {
             	writeToFile(diskRead(node.child[i]), Seq, writer);
             }
+            
             writer.println(SequenceUtils.longToDnaString(node.key[i].getValue(), Seq) + " " + node.key[i].getFrequency());
         }
         if (!node.leaf) {
@@ -749,6 +751,9 @@ public class BTree {
       } else {
         insertValue(r, key);
       }
+      
+      this.rootAddress = this.root.address;
+      writeMetaData();
     }
 
     /*
