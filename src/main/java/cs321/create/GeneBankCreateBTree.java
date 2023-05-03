@@ -31,13 +31,13 @@ public class GeneBankCreateBTree
         int debugLevel = cmdArgs.getDebugLevel();
 
         // Create BTree file, if the file exists delete it to make it easier to re-run test
-        File bTreeFile = new File(gbkFileName + ".btree.data." + sequenceLength + "." + degree);
+        File bTreeFile = new File("results/ourBtrees/"+gbkFileName + ".btree.data." + sequenceLength + "." + degree);
         if (bTreeFile.exists()) {
             bTreeFile.delete();
         }
 
         // Initialize BTree
-        BTree bTree = new BTree(new File(gbkFileName + ".btree.data." + sequenceLength + "." + degree), degree, useCache, cacheSize);
+        BTree bTree = new BTree(new File("results/ourBtrees/"+gbkFileName + ".btree.data." + sequenceLength + "." + degree), degree, useCache, cacheSize);
         bTree.create();
         
         // Setup debug levels
@@ -72,9 +72,7 @@ public class GeneBankCreateBTree
 		while (matcher.find()) {
 		    String sequence = matcher.group(1);
 		    String[] x = sequence.split("\\s+");
-		    
-		    //System.out.println(sequence);
-		    
+		    		    
 		    List<String> filteredList = Arrays.stream(x)
                     .filter(str -> !str.isEmpty() && !str.matches(".*\\d.*"))
                     .collect(Collectors.toList());
@@ -98,10 +96,7 @@ public class GeneBankCreateBTree
 			bTree.writeToFile(bTree.getRoot(), sequenceLength, new PrintWriter(new File("results/ourDump/"+gbkFileName+".dump."+sequenceLength)));
 		
 		Connection connection = null;
-		
-		
-		System.out.println(bTree.diskForceRead(bTree.getRoot().getAddress()).toJSONData());
-		
+				
 		try {
 			String basePath = "results/ourDatabase";
 			String dbName = gbkFileName + "." + sequenceLength + ".db";
@@ -127,7 +122,6 @@ public class GeneBankCreateBTree
 			System.out.println(e);
 		}
 		
-		System.out.println(bTree.diskForceRead(9424).toJSONData());
     }
 
     private static GeneBankCreateBTreeArguments parseArgumentsAndHandleExceptions(String[] args)

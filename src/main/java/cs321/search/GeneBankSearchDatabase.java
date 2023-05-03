@@ -45,7 +45,7 @@ public class GeneBankSearchDatabase
         	sb.append(String.format("%s %d%n", line, total));
         }
         
-        System.out.println(sb.toString());
+        System.out.println(sb.toString().substring(0, sb.toString().length()-1));
     }
 
     private static GeneBankSearchDatabaseArguments parseArgumentsAndHandleExceptions(String[] args)

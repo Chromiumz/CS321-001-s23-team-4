@@ -49,7 +49,8 @@ public class GeneBankSearchBTree
                 tot2 += n2.getNode().getKey(n2.getIndex()).getFrequency();
         	}
         	
-        	sb.append(String.format("%s %d%n", line, total));
+            sb.append(String.format("%s %d%n", line, total));
+            
 
             if(debugLevel == 1){
                System.out.println("Sequence: " + line + "| Original: " + tot1 + "| Compliment: " + tot2 + "| Total: " + total);
@@ -58,7 +59,7 @@ public class GeneBankSearchBTree
         }
 
         if(debugLevel == 0){
-            System.out.println(sb.toString());
+            System.out.println(sb.toString().substring(0, sb.toString().length()-1));
         }
         
         reader.close();

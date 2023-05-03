@@ -9,9 +9,9 @@ datafile=$1
 for i in 1 2 3 4 5 6 7 8 9 10 20 31
 do
 	echo
-	echo "Running queryfile " query$i "on $datafile.btree.data.$i.0"
+	echo "Running queryfile " query$i "on $datafile.btree.data.$i.128"
 	echo
-	time java -jar build/libs/GeneBankSearchBTree.jar --cache=0 --degree=0 --btreefile=$datafile.btree.data.$i.0 --length=$i --queryfile=data/queries/query$i --debug=0  > data/queries/query$i-$datafile.out
+	time java -jar build/libs/GeneBankSearchBTree.jar --cache=0 --degree=0 --btreefile=results/ourBtrees/$datafile.btree.data.$i.128 --length=$i --queryfile=results/query-results/query$i --debug=0  > data/queries/query$i-$datafile.out
 done
 echo
 
