@@ -52,7 +52,7 @@ public class GeneBankSearchBTree
         	sb.append(String.format("%s %d%n", line, total));
 
             if(debugLevel == 1){
-                //System.out.println("Sequence: " + line + "| Original: " + tot1 + "| Compliment: " + tot2 + "| Total: " + total);
+               System.out.println("Sequence: " + line + "| Original: " + tot1 + "| Compliment: " + tot2 + "| Total: " + total);
             }
     
         }
