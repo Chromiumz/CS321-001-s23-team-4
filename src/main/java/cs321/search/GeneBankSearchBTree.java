@@ -38,12 +38,14 @@ public class GeneBankSearchBTree
         	Tuple n1 = bTree.search(bTree.getRoot(), sequence);
         	Tuple n2 = bTree.search(bTree.getRoot(), SequenceUtils.getComplement(sequence, sequenceLength));
         	
-        	if(n1 != null)
+        	if(n1 != null) {
         		total += n1.getNode().getKey(n1.getIndex()).getFrequency();
                 tot1 += n1.getNode().getKey(n1.getIndex()).getFrequency();;
-        	if(n2 != null)
+        	}
+        	if(n2 != null) {
         		total += n2.getNode().getKey(n2.getIndex()).getFrequency();
                 tot2 += n2.getNode().getKey(n2.getIndex()).getFrequency();
+        	}
         	
         	sb.append(String.format("%s %d%n", line, total));
 

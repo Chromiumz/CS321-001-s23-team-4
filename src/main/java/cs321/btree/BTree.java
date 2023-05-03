@@ -7,6 +7,9 @@ import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -621,6 +624,36 @@ public class BTree {
         }
         
         writer.flush();
+    }
+    
+    /**
+     * Performs an in-order traversal on the BTree starting at the given node and writes each node via a SQL. You must close
+     * your connection elsewhere.
+     * 
+     * Citation:
+     * Initial creation assisted by ChatGPT (Very bare-bones) we added more functionality.
+     * 
+     * @param node The node to start from
+     * @param Seq The sequence length
+     * @param db The database connections statement.
+     * @throws IOException If something goes wrong while reading the BTree file.
+     * @throws SQLException 
+     * @throws IllegalArgumentException 
+     */
+    public void writeToDatabase(BTreeNode node, int Seq, Statement db) throws IOException, IllegalArgumentException, SQLException {
+        if (node == null) {
+            return;
+        }
+        int i;
+        for (i = 0; i < node.n; i++) {
+            if (!node.leaf) {
+            	writeToDatabase(diskRead(node.child[i]), Seq, db);
+            }
+            db.executeUpdate("insert into btree values('"+SequenceUtils.longToDnaString(node.key[i].getValue(), Seq)+"', "+node.key[i].getFrequency()+")");
+        }
+        if (!node.leaf) {
+        	writeToDatabase(diskRead(node.child[i]), Seq, db);
+        }
     }
     
     /**

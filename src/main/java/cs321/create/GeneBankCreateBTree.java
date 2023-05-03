@@ -4,6 +4,11 @@ import cs321.btree.TreeObject;
 import cs321.common.ParseArgumentException;
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -92,7 +97,34 @@ public class GeneBankCreateBTree
 		}
 		if(debugLevel == 1)
 			bTree.writeToFile(bTree.getRoot(), sequenceLength, new PrintWriter(new File("results/ourDump/"+gbkFileName+".dump."+sequenceLength)));
+		
+		Connection connection = null;
+		
+		try {
+			String basePath = "results/ourDatabase";
+			String dbName = gbkFileName + "." + sequenceLength + ".db";
+			connection = DriverManager.getConnection(String.format("jdbc:sqlite:%s/%s", basePath, dbName));
+			
+			Statement statement = connection.createStatement();
+			
+			statement.executeUpdate("drop table if exists btree");
+	        statement.executeUpdate("create table btree (sequence string, frequency integer)");
+			
+	        bTree.writeToDatabase(bTree.getRoot(), sequenceLength, statement);
+	        
+	        /*ResultSet rs = statement.executeQuery("select * from btree");
+			while(rs.next())
+			{
+			// read the result set
+				System.out.println(rs.getString("sequence") + " " + rs.getInt("frequency"));
+			}*/
+	        
+			connection.close();
+			//System.out.println("Closed");
+		} catch (SQLException e) {
+			System.out.println(e);
 		}
+    }
 
     private static GeneBankCreateBTreeArguments parseArgumentsAndHandleExceptions(String[] args)
     {
