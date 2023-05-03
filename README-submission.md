@@ -27,6 +27,11 @@ For the test data `test5.gbk`, how much did a Cache of size 5000 improve your pe
 Using a cachesize of 500 for the above command, it took ~16 seconds.
 
 # AWS Notes
+It was interesting working with AWS. The setup was a little tricky, especially when trying to clone the project
+into AWS. However, it was interesting to work with it. It seemed like a standard console, similar to the boisestate budgie.
+However, the difference in speed between the two in insane. When I ran ./create-btrees.sh test5.gbk in my boisestate budgie
+it took almost 45 minutes for all the files to finish, while AWS took a significantly less amount of time. I could almost 
+compare it to using a cache vs not using a cache.
 
 # Reflection
 
